@@ -164,21 +164,32 @@
   to { box-shadow: 0 0 0 7px transparent; }
 }
 
+/* A logo ocupa o meio: o tamanho acompanha a largura e a altura que
+   sobram (unidades cqw/cqh do contêiner), para caber mesmo quando os
+   detalhes abrem embaixo. */
 .portal__centro {
+  container-type: size;
   display: grid;
   place-items: center;
   min-height: 0;
 }
-.portal__logo {
-  width: min(88%, 22rem);
-  max-height: 100%;
-  height: auto;
-  object-fit: contain;
-  transition: transform var(--lento) var(--salto), filter var(--medio) ease;
+.portal__logo-caixa {
+  position: relative;
+  display: block;
+  transition: transform var(--lento) var(--salto);
 }
-.portal:is(:hover, :focus-visible) .portal__logo { transform: scale(1.06); }
+.portal:is(:hover, :focus-visible) .portal__logo-caixa { transform: scale(1.06); }
+.portal__logo {
+  display: block;
+  width: min(21rem, 88cqw);
+  height: auto;
+  max-height: 94cqh;
+  object-fit: contain;
+  transition: filter var(--medio) ease;
+}
+.portal[data-arte="aurora"] .portal__logo { width: min(17rem, 74cqw); }
 
-/* Evolution: a logo de neon brilha e falha junto com a moldura */
+/* Evolution: a logo de neon acende piscando e brilha mais sob o mouse */
 .portal[data-arte="neon"] .portal__logo {
   filter: drop-shadow(0 0 14px color-mix(in srgb, var(--cor) 55%, transparent));
   animation: neon-liga 1.4s steps(1, end) 0.45s backwards;
@@ -188,14 +199,8 @@
   animation: neon-falha 0.9s steps(1, end);
 }
 
-/* Elas: um brilho atravessa as letras (a própria logo é a máscara) */
-.portal__logo-caixa {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: min(80%, 19rem);
-}
-.portal__logo-caixa .portal__logo { width: 100%; }
+/* Elas e Master: um brilho atravessa as letras (a própria logo é a
+   máscara, então só elas brilham) */
 .portal__brilho {
   position: absolute;
   inset: 0;
@@ -206,10 +211,9 @@
   mask: var(--logo) center / contain no-repeat;
   opacity: 0;
   pointer-events: none;
-  transition: transform var(--lento) var(--salto);
 }
+.portal[data-arte="neon"] .portal__brilho { display: none; }
 .portal:is(:hover, :focus-visible) .portal__brilho {
-  transform: scale(1.06);
   animation: brilho-letras 1.6s ease-in-out;
 }
 @keyframes brilho-letras {
@@ -322,10 +326,9 @@
   .portais > li { flex: none; }
   .portal { min-height: 17rem; transform: none; }
   .portal__conteudo { padding: 20px 20px 18px; }
-  .portal__logo { width: min(78%, 17rem); max-height: 7.5rem; }
-  .portal__logo-caixa { width: min(66%, 14rem); }
-  .portal__logo-caixa .portal__logo { max-height: none; }
-  .portal__centro { padding: var(--e-3) 0; }
+  .portal__centro { container-type: normal; padding: var(--e-2) 0 var(--e-1); }
+  .portal__logo { width: min(17rem, 76vw); max-height: 7.5rem; }
+  .portal[data-arte="aurora"] .portal__logo { width: min(13rem, 58vw); max-height: none; }
 }
 
 /* ---------- Continuar de onde parou ---------- */
