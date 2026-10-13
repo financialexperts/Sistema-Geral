@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Marca do Master: o "M" da logo (as três peças, medidas na logo
+       original) no azul dela, sobre o azul-noite -->
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2D5C"/>
+      <stop offset="1" stop-color="#061329"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#fundo)"/>
+  <g transform="translate(14 14.46) scale(.1846)" fill="#00AAFF">
+    <path d="M0 0 99 58 195 0V190H161V62L99 99 0 41Z"/>
+    <path d="M0 61 98 119 142 92V135L99 161 0 101Z"/>
+    <path d="M0 127 35 147V190H0Z"/>
+  </g>
+</svg>

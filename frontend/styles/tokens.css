@@ -1,0 +1,142 @@
+/* ============================================================
+   TOKENS DE DESIGN
+   O padrão da Gestão de Reuniões: aparência clara no estilo Apple
+   (cinzas neutros do macOS/apple.com, cartões brancos e o azul do
+   sistema como cor de ação). O portal é sempre claro, mesmo com o
+   Windows/macOS no modo escuro. Cores nomeadas pelo papel; contrastes
+   (WCAG) medidos ao lado.
+
+   As cores de cada CURSO não ficam aqui: vêm do catálogo
+   (backend/config/catalogo.js) e entram como variáveis no style de
+   quem desenha naquele curso — --cor, --cor-brilho, --cor-texto,
+   --cor-fundo e --cor-fundo-2 (frontend/features/cursos/aparencia.js).
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* Marca Financial Experts: as barras do logo */
+  --marca-menta: #3CEFA2;
+  --marca-tinta: #272259;
+
+  /* Superfícies */
+  --janela: #F5F5F7;
+  --superficie: #FFFFFF;
+
+  /* Texto */
+  --rotulo: #1D1D1F;        /* 16,8:1 no branco · 15,5:1 na janela */
+  --rotulo-2: #6E6E73;      /*  5,1:1 no branco ·  4,7:1 na janela */
+  --rotulo-3: #8E8E93;      /*  3,3:1 — só bordas de controle e ícones */
+  --placeholder: #6E6E73;   /*  4,5:1 ou mais em todos os campos */
+
+  --separador: rgb(0 0 0 / 0.10);
+  --preenchimento: rgb(118 118 128 / 0.12);
+  --preenchimento-2: rgb(118 118 128 / 0.20);
+  --contorno: rgb(0 0 0 / 0.06);
+  --contorno-campo: rgb(0 0 0 / 0.14);
+
+  /* Azul do sistema: ação principal, seleção e foco — uma cor, um papel */
+  --acento: #0071E3;        /* texto branco sobre ele 4,7:1 · anel no branco 4,7:1 */
+  --link: #0066CC;          /* ações só de texto: 5,6:1 no branco · 5,1:1 na janela */
+  --acento-suave: #EEF5FD;
+  --sobre-acento: #FFFFFF;
+  --anel-foco: var(--acento);
+  --anel-foco-suave: rgb(0 113 227 / 0.25);
+
+  --perigo: #D70015;        /* 5,4:1 no branco · 4,9:1 no fundo de erro */
+  --perigo-suave: #FFF0F1;
+  --sucesso: #1E7B34;       /* 5,3:1 no branco · 4,9:1 no fundo de sucesso */
+  --sucesso-suave: #EDF7EF;
+
+  /* As três cores dos cursos juntas, para o que é de todos (o fundo da
+     tela de acesso, o título do início). Cada curso, sozinho, usa as do
+     catálogo. */
+  --evolution: #1F8BFF;
+  --elas: #13B6C0;
+  --master: #00AAFF;
+
+  /* Monograma cinza, como no app Contatos. Branco sobre o tom mais claro:
+     3,3:1 (iniciais grandes em negrito pedem 3:1). */
+  --avatar-topo: #8E8E93;
+  --avatar-base: #6E6E73;
+
+  /* Vidro (camada funcional: barra lateral, controles, menus) */
+  --vidro: rgb(255 255 255 / 0.72);
+  --vidro-forte: rgb(255 255 255 / 0.86);
+  --vidro-menu: rgb(255 255 255 / 0.94);
+  --vidro-brilho: inset 0 1px 0 rgb(255 255 255 / 0.9);
+  --vidro-contorno: rgb(0 0 0 / 0.08);
+  --vidro-desfoque: blur(24px) saturate(1.8);
+
+  --sombra-controle: 0 1px 2px rgb(0 0 0 / 0.05), 0 2px 8px rgb(0 0 0 / 0.04);
+  --sombra-painel: 0 2px 8px rgb(0 0 0 / 0.04), 0 18px 48px rgb(0 0 0 / 0.10);
+  --sombra-menu: 0 2px 8px rgb(0 0 0 / 0.06), 0 14px 44px rgb(0 0 0 / 0.16);
+  --sombra-cartao: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.04);
+  --sombra-cartao-hover: 0 2px 6px rgb(0 0 0 / 0.06), 0 16px 40px rgb(0 0 0 / 0.12);
+
+  /* ---------- Tipografia ----------
+     Fonte do sistema: SF Pro no Mac, Segoe UI Variable no Windows.
+     Tamanhos em rem para acompanhar o tamanho de fonte do navegador. */
+  --fonte: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fonte-titulo: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --t-titulo-grande: 700 1.625rem/2rem var(--fonte-titulo);   /* 26/32 */
+  --t-titulo-2: 700 1.25rem/1.625rem var(--fonte-titulo);     /* 20/26 */
+  --t-titulo-cartao: 600 1.0625rem/1.375rem var(--fonte);     /* 17/22 */
+  --t-corpo: 400 0.875rem/1.25rem var(--fonte);               /* 14/20 */
+  --t-chamada: 400 0.8125rem/1.125rem var(--fonte);           /* 13/18 */
+  --t-nota: 500 0.75rem/1rem var(--fonte);                    /* 12/16 */
+
+  /* ---------- Espaço, forma, movimento ---------- */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 20px;
+  --e-6: 24px;
+  --e-8: 32px;
+  --margem: 28px;
+
+  --altura-controle: 36px;
+  --raio-cartao: 20px;
+  --raio-painel: 18px;
+  --raio-portal: 28px;
+
+  --largura-barra: 15.5rem;
+  --mola: cubic-bezier(0.32, 0.72, 0, 1);
+  --salto: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rapido: 160ms;
+  --medio: 320ms;
+  --lento: 560ms;
+}
+
+/* Contraste aumentado: rótulos secundários e bordas mais fortes,
+   vidro vira superfície opaca (HIG › Accessibility › Vision). */
+@media (prefers-contrast: more) {
+  :root {
+    --rotulo-2: #48484A;
+    --rotulo-3: #6E6E73;
+    --placeholder: #48484A;
+    --separador: rgb(0 0 0 / 0.30);
+    --contorno: rgb(0 0 0 / 0.30);
+    --contorno-campo: rgb(0 0 0 / 0.55);
+    --vidro-contorno: rgb(0 0 0 / 0.40);
+    --vidro: var(--superficie);
+    --vidro-forte: var(--superficie);
+    --vidro-menu: var(--superficie);
+  }
+}
+
+/* Transparência reduzida: sem desfoque, superfícies opacas. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --vidro: var(--superficie);
+    --vidro-forte: var(--superficie);
+    --vidro-menu: var(--superficie);
+    --vidro-desfoque: none;
+  }
+}
+
+@media (max-width: 599px) {
+  :root { --margem: 16px; }
+}

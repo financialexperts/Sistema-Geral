@@ -1,0 +1,248 @@
+/* ============================================================
+   TELA DE ACESSO — entrar, criar conta, pedir link de senha e
+   criar senha nova. O cartão branco do padrão (como as telas de
+   conta da Apple), em vidro fosco sobre as luzes dos três cursos,
+   que passeiam devagar atrás dele: um login só para todos.
+   ============================================================ */
+
+.tela-auth,
+.tela-inicial {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  display: grid;
+  place-items: center;
+  padding: var(--e-8) var(--e-4);
+  background: var(--janela);
+  isolation: isolate;
+}
+
+/* ---------- Fundo: as luzes dos cursos ---------- */
+
+.auth-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Quadriculado fino que some nas bordas (o mesmo dos sistemas) */
+.auth-fundo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(39 34 89 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(39 34 89 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+}
+.auth-fundo__luz {
+  position: absolute;
+  width: 48vmax;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.auth-fundo__luz--evolution {
+  top: -20vmax;
+  left: -14vmax;
+  background: var(--evolution);
+  animation: luz-a 24s ease-in-out infinite alternate;
+}
+.auth-fundo__luz--elas {
+  right: -16vmax;
+  bottom: -22vmax;
+  background: var(--elas);
+  animation: luz-b 28s ease-in-out infinite alternate;
+}
+.auth-fundo__luz--master {
+  top: 30%;
+  left: 58%;
+  width: 34vmax;
+  background: var(--master);
+  opacity: 0.32;
+  animation: luz-c 19s ease-in-out infinite alternate;
+}
+@keyframes luz-a { to { transform: translate(18vmax, 14vmax) scale(1.15); } }
+@keyframes luz-b { to { transform: translate(-16vmax, -12vmax) scale(0.9); } }
+@keyframes luz-c { to { transform: translate(-30vmax, -10vmax) scale(1.25); } }
+
+/* ---------- Cartão ---------- */
+
+.cartao-auth {
+  position: relative;
+  width: min(100%, 25rem);
+  padding: 34px 32px 26px;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 28px;
+  background: rgb(255 255 255 / 0.8);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  backdrop-filter: blur(30px) saturate(1.6);
+  box-shadow: var(--vidro-brilho), 0 2px 8px rgb(0 0 0 / 0.04), 0 30px 80px rgb(39 34 89 / 0.16);
+  animation: cartao-sobe 640ms var(--mola) both;
+}
+@keyframes cartao-sobe {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .cartao-auth { background: var(--superficie); }
+}
+
+@media (max-width: 479px) {
+  .cartao-auth { padding: 28px 20px 20px; border-radius: 24px; }
+}
+
+/* ---------- Marca: as barras do logo ----------
+   Desencontradas em repouso, como no logo; entram deslizando cada uma
+   do seu lado. Enquanto o acesso é verificado elas se ALINHAM — o
+   indicador de espera é o próprio desenho da marca. Com "reduzir
+   movimento" nada se move. */
+
+.marca {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-bottom: var(--e-5);
+}
+
+.marca-barras {
+  width: 56px;
+  height: 50px;
+  overflow: visible;
+}
+
+/* 420 ms + 4 × 30 ms de escalonamento = 540 ms (DURACAO_ALINHAR em auth.js) */
+/* "backwards": a entrada só segura o começo; depois dela, quem move as
+   barras é a transição do alinhar. */
+.marca-barras rect {
+  fill: var(--marca-menta);
+  transition: transform 420ms var(--mola);
+  animation: barra-entra 700ms var(--mola) backwards;
+}
+.marca-barras .barra-esq { --de: -26px; }
+.marca-barras .barra-dir { --de: 26px; }
+.marca-barras rect:nth-child(2) { transition-delay: 30ms; animation-delay: 60ms; }
+.marca-barras rect:nth-child(3) { transition-delay: 60ms; animation-delay: 120ms; }
+.marca-barras rect:nth-child(4) { transition-delay: 90ms; animation-delay: 180ms; }
+.marca-barras rect:nth-child(5) { transition-delay: 120ms; animation-delay: 240ms; }
+@keyframes barra-entra {
+  from { opacity: 0; transform: translateX(var(--de)); }
+}
+
+.alinhando .marca-barras .barra-esq { transform: translateX(17.5px); }
+.alinhando .marca-barras .barra-dir { transform: translateX(-17.5px); }
+
+.marca__nome {
+  font: 600 0.6875rem/1 var(--fonte);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--marca-tinta);
+}
+
+/* Tela de abertura (enquanto o navegador confere se já há sessão): só a
+   marca, com as barras se alinhando e desalinhando. */
+.tela-inicial .marca-barras { width: 64px; height: 57px; }
+.tela-inicial .marca-barras rect { animation: barra-entra 700ms var(--mola) backwards, respirar 1.6s 700ms ease-in-out infinite alternate; }
+.tela-inicial .marca-barras .barra-esq { --para: 17.5px; }
+.tela-inicial .marca-barras .barra-dir { --para: -17.5px; }
+@keyframes respirar { to { transform: translateX(var(--para)); } }
+
+/* ---------- Formulários ---------- */
+
+.abas--auth { margin-bottom: var(--e-5); }
+
+.form-auth { display: grid; gap: var(--e-4); }
+.form-auth:not([hidden]) { animation: painel-entra 360ms var(--mola); }
+@keyframes painel-entra {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+.form-auth__cabecalho {
+  display: grid;
+  gap: 6px;
+  margin-bottom: var(--e-1);
+  text-align: center;
+}
+
+.form-auth__titulo {
+  font: var(--t-titulo-2);
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.form-auth__descricao {
+  color: var(--rotulo-2);
+  text-wrap: balance;
+}
+
+.form-auth__acoes {
+  display: grid;
+  justify-items: center;
+  gap: var(--e-2);
+  margin-top: var(--e-1);
+}
+.form-auth__acoes .botao-primario { width: 100%; }
+
+/* Confirmação depois de pedir o link: substitui os campos */
+.confirmacao {
+  display: grid;
+  justify-items: center;
+  gap: var(--e-3);
+  text-align: center;
+}
+.confirmacao .icone {
+  width: 40px;
+  height: 40px;
+  color: var(--acento);
+  stroke-width: 1.5;
+}
+.confirmacao p { color: var(--rotulo-2); text-wrap: pretty; }
+.confirmacao strong { color: var(--rotulo); font-weight: 600; word-break: break-all; }
+
+/* ---------- Os cursos que este login abre ---------- */
+
+.auth-cursos {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: var(--e-6);
+  padding-top: var(--e-5);
+  border-top: 1px solid var(--separador);
+}
+.auth-cursos__titulo {
+  font: var(--t-nota);
+  color: var(--rotulo-2);
+}
+.auth-cursos__lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+}
+.auth-curso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 0.8125rem/1 var(--fonte);
+  color: var(--cor-texto);
+}
+.auth-curso img {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--cor) 35%, transparent);
+  animation: flutuar-marca 3.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * -1.2s);
+}
+@keyframes flutuar-marca {
+  from { transform: translateY(1.5px) rotate(-2deg); }
+  to { transform: translateY(-2.5px) rotate(2deg); }
+}
+
+@media (forced-colors: active) {
+  .cartao-auth { border: 1px solid CanvasText; }
+}
