@@ -75,16 +75,16 @@ export const SISTEMAS = [
   },
   {
     id: 'laura',
-    nome: 'Laura',
-    descricao: 'Simulador de renda: escolha como a Laura vai gerar renda com R$ 30 mil e 10 horas por dia, e veja o que muda numa crise.',
+    nome: 'Combinação de Renda',
+    descricao: 'Escolha como a Laura vai gerar renda com R$ 30 mil e 10 horas por dia, e veja o que muda numa crise.',
     icone: 'renda',
     endereco: 'apps/laura/index.html',
     temaEscuro: true,
   },
   {
     id: 'vanessa-e-karine',
-    nome: 'Vanessa e Karine',
-    descricao: 'Faça as contas das escolhas das duas ao longo de 40 anos e jogue o Seu dinheiro no tempo.',
+    nome: 'Simulador de Escolhas',
+    descricao: 'Faça as contas das escolhas da Vanessa e da Karine ao longo de 40 anos e jogue o Seu dinheiro no tempo.',
     icone: 'balanca',
     paginas: [
       { id: 'escolhas', nome: 'Vanessa e Karine', endereco: 'apps/vanessa-e-karine/index.html' },

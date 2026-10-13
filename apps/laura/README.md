@@ -7,7 +7,7 @@ Simulação em que o aluno escolhe como a Laura vai gerar renda, com R$ 30.000 d
 
 Não tem build, instalação nem banco de dados: é `index.html` + alguns arquivos `.js` e `.css` estáticos, na identidade visual da Financial Experts.
 
-> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Evolution** → **Laura**. A versão original, com login próprio, continua em `Sistemas/`. Ela não usa o banco: o portal só garante que quem abre é um aluno logado.
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Evolution** → **Combinação de Renda**. A versão original, com login próprio, continua em `Sistemas/`. Ela não usa o banco: o portal só garante que quem abre é um aluno logado.
 
 ---
 

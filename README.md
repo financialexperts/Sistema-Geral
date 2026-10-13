@@ -4,7 +4,7 @@ Os sistemas dos cursos da Financial Experts num lugar só, com **um login só**.
 
 | Curso | Sistemas |
 |---|---|
-| **Evolution** (Financial Evolution) | Fluxo de Caixa · Laura (simulador de renda) · Vanessa e Karine (escolhas + Seu dinheiro no tempo) |
+| **Evolution** (Financial Evolution) | Fluxo de Caixa · Combinação de Renda (a Laura) · Simulador de Escolhas (Vanessa e Karine + Seu dinheiro no tempo) |
 | **Elas** (Finanças para Elas) | Calculadora de Juros · Calculadora Financeira · Carteira de Investimentos |
 | **Master** (Financial Master) | Calculadora de Juros · Calculadora Financeira · Carteira de Investimentos |
 
