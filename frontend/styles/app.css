@@ -1,0 +1,466 @@
+/* ============================================================
+   ESTRUTURA DO PORTAL — barra lateral + área principal.
+   A barra lateral flutua em vidro sobre a janela (camada funcional)
+   e lista os cursos; o curso aberto mostra os sistemas dele logo
+   abaixo, para pular de um para outro. O conteúdo rola por baixo do
+   cabeçalho, que ganha o "efeito de borda de rolagem" em vez de um
+   fundo sólido (HIG › Layout).
+   ============================================================ */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--largura-barra) minmax(0, 1fr);
+  height: 100dvh;
+  transition: grid-template-columns var(--medio) var(--mola);
+}
+.app.entrando { animation: surgir 420ms ease both; }
+@keyframes surgir { from { opacity: 0; } }
+
+/* ---------- Barra lateral ---------- */
+
+.barra-lateral {
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--largura-barra) - 10px);
+  min-width: 0;
+  margin: 10px 0 10px 10px;
+  padding: var(--e-4) var(--e-3);
+  overflow: hidden auto;
+  border: 1px solid var(--vidro-contorno);
+  border-radius: var(--raio-painel);
+  background: var(--vidro-forte);
+  box-shadow: var(--vidro-brilho), var(--sombra-painel);
+  transition: transform var(--medio) var(--mola), visibility 0s;
+  view-transition-name: barra-lateral;
+}
+
+.barra-lateral__marca {
+  display: flex;
+  align-items: center;
+  height: var(--altura-controle);
+  padding: 0 var(--e-2);
+  margin-bottom: var(--e-5);
+}
+.barra-lateral__marca img { height: 26px; width: auto; }
+
+.menu { display: grid; gap: 2px; }
+
+.menu__titulo {
+  margin: var(--e-5) 10px 6px;
+  font: 600 0.6875rem/1 var(--fonte);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rotulo-2);
+}
+
+.menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--rotulo);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--rapido) ease;
+}
+.menu__item > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.menu__item > .icone { color: var(--rotulo-2); }
+.menu__item:hover { background: var(--preenchimento); }
+/* Item atual: realce cinza com ícone no azul, como na barra lateral do
+   Finder. Continua marcado dentro de um curso (aria-current="true"). */
+.menu__item[aria-current] {
+  background: var(--preenchimento-2);
+  font-weight: 600;
+}
+.menu__item[aria-current] > .icone { color: var(--acento); }
+
+/* Curso: a marca dele no lugar do ícone e, aberto, o realce na cor dele */
+.menu__marca {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.14);
+  transition: transform var(--medio) var(--salto);
+}
+.menu__item:hover .menu__marca { transform: scale(1.1) rotate(-4deg); }
+.menu__item--curso[aria-current] {
+  background: color-mix(in srgb, var(--cor) 14%, transparent);
+  color: color-mix(in srgb, var(--cor-texto) 70%, var(--rotulo));
+}
+
+/* Os sistemas do curso aberto, logo abaixo dele: a lista abre deslizando
+   (a linha da grade vai de 0 à altura do conteúdo). */
+.menu__sistemas {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows var(--medio) var(--mola), visibility 0s var(--medio);
+}
+.menu__curso[data-aberto] > .menu__sistemas {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows var(--medio) var(--mola), visibility 0s;
+}
+.menu__sistemas > ul {
+  display: grid;
+  gap: 2px;
+  min-height: 0;
+  overflow: hidden;
+  padding: 2px 0 6px 18px;
+}
+.menu__item--sistema {
+  min-height: 32px;
+  font-size: 0.8125rem;
+}
+.menu__item--sistema[aria-current] {
+  background: color-mix(in srgb, var(--cor) 16%, transparent);
+}
+.menu__item--sistema::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  width: 3px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--cor);
+  translate: 0 -50%;
+  transition: height var(--medio) var(--mola);
+}
+.menu__item--sistema[aria-current]::before { height: 18px; }
+
+/* Barra oculta pelo botão (janela larga): a coluna encolhe e a barra sai
+   pela esquerda; some de vez (visibility) só no fim do deslize. */
+.app[data-barra-oculta] { grid-template-columns: 0 minmax(0, 1fr); }
+.app[data-barra-oculta] .barra-lateral {
+  visibility: hidden;
+  transform: translateX(calc(-100% - 10px));
+  transition: transform var(--medio) var(--mola), visibility 0s var(--medio);
+}
+
+.veu { display: none; }
+
+/* Janela estreita: a barra vira um painel sobreposto que desliza da
+   esquerda (HIG › Sidebars: esconder a barra quando a janela diminui). */
+@media (max-width: 899px) {
+  .app,
+  .app[data-barra-oculta] { grid-template-columns: minmax(0, 1fr); }
+
+  .barra-lateral,
+  .app[data-barra-oculta] .barra-lateral {
+    position: fixed;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    z-index: 40;
+    width: min(18rem, calc(100vw - 56px));
+    margin: 0;
+    -webkit-backdrop-filter: var(--vidro-desfoque);
+    backdrop-filter: var(--vidro-desfoque);
+    visibility: hidden;
+    transform: translateX(calc(-100% - 20px));
+    transition: transform var(--medio) var(--mola), visibility 0s var(--medio);
+  }
+  .app[data-barra-aberta] .barra-lateral {
+    visibility: visible;
+    transform: none;
+    transition: transform var(--medio) var(--mola), visibility 0s;
+  }
+
+  .veu {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgb(0 0 0 / 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--medio) ease;
+  }
+  .app[data-barra-aberta] .veu { opacity: 1; pointer-events: auto; }
+}
+
+/* ---------- Área principal ---------- */
+
+.principal {
+  position: relative;
+  height: 100dvh;
+  min-width: 0;
+  overflow-y: auto;
+  scroll-padding-top: calc(var(--altura-cabecalho, 120px) + var(--e-3));
+}
+.principal:focus { outline: none; }
+
+/* Com um sistema aberto, quem rola é ele (dentro da moldura): a área
+   principal vira uma coluna fixa, cabeçalho em cima e o sistema embaixo. */
+.app[data-tela="sistema"] .principal {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  padding: var(--e-4) var(--margem) var(--e-5);
+}
+.app[data-tela="sistema"] .cabecalho { flex: none; padding-bottom: var(--e-3); }
+
+/* Efeito de borda de rolagem: só aparece quando há conteúdo passando
+   por baixo; desfoca e esmaece em vez de pintar uma faixa sólida. */
+.cabecalho::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -28px;
+  z-index: -1;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--janela) 90%, transparent) 70%, transparent);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--rapido) ease;
+}
+.cabecalho.rolado::before { opacity: 1; }
+
+@media (prefers-reduced-transparency: reduce) {
+  .cabecalho::before {
+    background: var(--janela);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    inset: 0;
+    border-bottom: 1px solid var(--separador);
+  }
+}
+
+.cabecalho__barra {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  min-height: 44px;
+}
+
+/* O pedaço do cabeçalho que muda com a tela: título e ações dela */
+.cabecalho__tela {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--e-3);
+  min-width: 0;
+}
+
+.cabecalho__titulos { flex: 1; min-width: 0; }
+
+.titulo-grande {
+  font: var(--t-titulo-grande);
+  letter-spacing: 0.006em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.titulo-grande:focus { outline: none; } /* recebe foco só para o leitor de tela anunciar a tela */
+
+.subtitulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font: var(--t-chamada);
+  color: var(--rotulo-2);
+  white-space: nowrap;
+}
+.subtitulo > span { overflow: hidden; text-overflow: ellipsis; }
+/* Ponto na cor do curso, antes do nome dele */
+.subtitulo__curso {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  color: var(--cor-texto);
+  font-weight: 600;
+}
+.subtitulo__curso::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cor) 22%, transparent);
+}
+
+@media (max-width: 599px) {
+  .titulo-grande { font-size: 1.375rem; line-height: 1.75rem; }
+}
+
+/* Marca do curso e ícone do sistema ao lado do título */
+.cabecalho__marca {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--cor) 30%, transparent);
+}
+
+/* Voltar: o chevron padrão, um pouco mais grosso que os outros ícones
+   da barra para pesar como o do Safari/Finder. */
+.botao-voltar .icone { stroke-width: 2.1; }
+
+.cabecalho__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  flex: none;
+}
+
+/* Abas das atividades de um sistema (quando ele tem mais de uma): na
+   linha do título na janela larga, numa linha própria no celular. */
+.abas--paginas { width: max-content; }
+.cabecalho__paginas { display: none; }
+@media (max-width: 759px) {
+  .cabecalho__acoes .abas--paginas { display: none; }
+  .cabecalho__paginas:not([hidden]) { display: block; }
+  .cabecalho__paginas .abas--paginas { width: 100%; }
+}
+
+/* ---------- Conta (canto superior direito) ----------
+   A conta fica na barra de ferramentas, não no pé da barra lateral:
+   HIG › Sidebars pede para não pôr ações importantes lá embaixo. */
+
+.botao-conta {
+  flex: none;
+  padding: 2px;
+  border: 1px solid var(--vidro-contorno);
+  border-radius: 50%;
+  background: var(--vidro);
+  -webkit-backdrop-filter: var(--vidro-desfoque);
+  backdrop-filter: var(--vidro-desfoque);
+  box-shadow: var(--vidro-brilho), var(--sombra-controle);
+  transition: transform var(--rapido) ease;
+}
+.botao-conta:active { transform: scale(0.95); }
+.botao-conta .avatar { width: 32px; height: 32px; font-size: 0.8125rem; }
+
+.menu-conta {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: min(20rem, calc(100vw - 16px));
+  padding: 6px;
+  border: 1px solid var(--vidro-contorno);
+  border-radius: 16px;
+  background: var(--vidro-menu);
+  -webkit-backdrop-filter: var(--vidro-desfoque);
+  backdrop-filter: var(--vidro-desfoque);
+  box-shadow: var(--vidro-brilho), var(--sombra-menu);
+  color: var(--rotulo);
+}
+.menu-conta:popover-open { animation: menu-abre 200ms var(--mola); }
+@keyframes menu-abre {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+}
+
+.menu-conta__perfil {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  padding: 10px 10px 12px;
+}
+.menu-conta__perfil > div { min-width: 0; }
+.menu-conta__perfil .avatar { width: 40px; height: 40px; font-size: 0.9375rem; }
+.menu-conta__nome {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.menu-conta__email {
+  font: var(--t-chamada);
+  color: var(--rotulo-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.separador {
+  height: 1px;
+  margin: 0 6px 6px;
+  border: 0;
+  background: var(--separador);
+}
+
+.menu-conta__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  font-weight: 500;
+}
+.menu-conta__item .icone { width: 18px; height: 18px; color: var(--rotulo-2); }
+.menu-conta__item:hover,
+.menu-conta__item:focus-visible { background: var(--preenchimento-2); outline: none; }
+
+/* ---------- Conteúdo ---------- */
+
+.conteudo { padding: 0 var(--margem) var(--e-8); }
+
+.secao {
+  display: grid;
+  gap: 2px;
+  margin: var(--e-6) 0 var(--e-4);
+}
+.secao__titulo { font: var(--t-titulo-2); letter-spacing: -0.012em; }
+.secao__descricao { font: var(--t-chamada); color: var(--rotulo-2); }
+
+/* Aviso de cookies (LGPD): uma vez por navegador, no pé da tela */
+.aviso-cookies {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(40rem, calc(100% - 32px));
+  padding: 12px 12px 12px 18px;
+  border: 1px solid var(--vidro-contorno);
+  border-radius: 18px;
+  background: var(--vidro-menu);
+  -webkit-backdrop-filter: var(--vidro-desfoque);
+  backdrop-filter: var(--vidro-desfoque);
+  box-shadow: var(--vidro-brilho), var(--sombra-menu);
+  translate: -50% 0;
+  animation: aviso-sobe 520ms var(--mola) both;
+}
+@keyframes aviso-sobe { from { opacity: 0; transform: translateY(24px); } }
+.aviso-cookies p { font: var(--t-chamada); color: var(--rotulo-2); text-wrap: pretty; }
+.aviso-cookies .botao-primario { flex: none; min-height: 36px; }
+@media (max-width: 599px) {
+  .aviso-cookies { flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; }
+}
+
+/* Leitura do que mudou na tela (leitor de tela), sem aparecer */
+.aviso-tela { position: absolute; }
+
+@media (forced-colors: active) {
+  .barra-lateral, .menu-conta, .aviso-cookies { border: 1px solid CanvasText; }
+  .menu__item[aria-current] { outline: 2px solid Highlight; }
+}
