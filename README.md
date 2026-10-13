@@ -31,7 +31,7 @@ Abra <http://localhost:5500>. Abrir o `index.html` direto do disco não funciona
 
 Não há dependências nem passo de build. Para publicar, suba a raiz como site estático (Vercel, Netlify, GitHub Pages…). As pastas `Sistemas/` e `Padrão design/` não são usadas pelo portal.
 
-> **GitHub Pages:** neste repositório, `Sistemas/` e `Padrão design/` são referências a outros repositórios (gitlinks, sem `.gitmodules`), e o build do GitHub Pages costuma falhar com isso. Se acontecer, tire essas referências do repositório (`git rm --cached`) ou publique só os arquivos do portal.
+> **GitHub Pages:** `Sistemas/` e `Padrão design/` ficam fora deste repositório (estão no `.gitignore`), porque cada sistema tem o próprio repositório. Se entrarem aqui como referências a outros repositórios (gitlinks, sem `.gitmodules`), o build do GitHub Pages falha. O arquivo `.nojekyll` faz o Pages publicar os arquivos como estão, sem passar pelo Jekyll.
 
 ## Antes de publicar: o endereço no Supabase
 
