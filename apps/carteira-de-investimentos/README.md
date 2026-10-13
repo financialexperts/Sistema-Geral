@@ -2,13 +2,15 @@
 
 App onde o aluno descobre o próprio perfil de investidor, monta a carteira dele e compara com a alocação sugerida para esse perfil.
 
-Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css` estáticos, com [Supabase](https://supabase.com) cuidando do login e de guardar os dados. Para rodar, basta abrir o `index.html` num servidor estático (ou publicar a pasta no GitHub Pages).
+Não tem build nem instalação: é `index.html` + alguns arquivos `.js` e `.css` estáticos, com [Supabase](https://supabase.com) guardando os dados.
+
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Elas ou Master** → **Carteira de Investimentos**. A versão original, com login próprio, continua em `Sistemas/`. O aviso de cookies (LGPD) também passou para o portal, com o mesmo cookie `aviso_cookies`.
 
 ---
 
 ## O caminho do aluno
 
-1. **Entrar.** Login com e-mail e senha. Quem ainda não tem conta cria uma na mesma tela, e quem esqueceu a senha recebe um link por e-mail.
+1. **Entrar.** O aluno entra no portal (com a conta de sempre, ou criando uma) e abre a Carteira no curso Elas ou no Master.
 
 2. **Etapa 01 — Seu perfil.** Ele escolhe entre **Conservador**, **Moderado** e **Arrojado**. Cada opção mostra só o nome e o nível de risco, num medidor de três barrinhas.
 
@@ -79,21 +81,19 @@ Cada perfil precisa listar as 8 categorias e somar 100. O próprio `investorProf
 ## Estrutura de arquivos
 
 ```
-index.html                      as telas: login, as duas etapas e a carteira
+index.html                      as telas: carregando, as duas etapas e a carteira
 frontend/
   css/styles.css                todo o visual, incluindo as cores das categorias
-  img/                          logos e favicon
-  js/config.js                  URL e chave do Supabase
-  js/supabaseClient.js          inicializa o cliente Supabase
+  img/                          favicon
   js/format.js                  formatação de dinheiro e leitura do que foi digitado
-  js/auth.js                    entrar / criar conta / esqueci a senha
   js/investments.js             a etapa 02: monta as tabelas, soma, limita e valida
   js/onboarding.js              as duas etapas e o que é salvo em cada uma
   js/portfolio.js               a carteira: as duas roscas e suas legendas
-  js/app.js                     roteamento por sessão, tema, liga tudo
+  js/app.js                     espera a sessão do portal, decide a etapa ou a carteira, liga tudo
 backend/
   js/investorProfiles.js        os 3 perfis e a alocação sugerida de cada um
   js/assetClasses.js            as categorias de RF e RV e o limite de 5
+../compartilhado/               portal.js (sessão, tema, ida ao portal) e supabaseClient.js
 ```
 
 Os dois arquivos em `backend/js/` não tocam no DOM: são só dados. É neles que se mexe para mudar textos, categorias ou a tabela de sugestões.
@@ -182,41 +182,11 @@ Trocar a `key` de uma categoria exige migrar o que já estiver salvo em `profile
 
 ## Login e senha
 
-O login é do Supabase Auth. As contas ficam em `auth.users`, num schema separado do `public`, e a senha é guardada como **hash bcrypt** — não dá para ler a senha de um aluno, nem pelo painel do Supabase. É de propósito.
-
-Quando um aluno não consegue entrar, os caminhos são:
-
-- ele mesmo usa o "Esqueceu a senha?" na tela de login; ou
-- você vai em **Authentication → Users** no painel do Supabase, acha o e-mail e manda um link de recuperação.
-
-### O link do e-mail precisa estar configurado
-
-O app manda o endereço da página atual no `redirectTo`, mas **o Supabase só respeita isso se o endereço estiver na lista de permitidos**. Quando não bate, ele ignora em silêncio e usa o **Site URL** do projeto — e o aluno cai numa página que não existe (`ERR_CONNECTION_REFUSED`).
-
-Em **Authentication → URL Configuration**:
-
-- **Site URL** — o endereço publicado:
-  ```
-  https://financialexperts.github.io/Carteira-de-Investimentos/
-  ```
-
-- **Redirect URLs** — uma linha por lugar onde o app roda, com `/**` no fim:
-  ```
-  https://financialexperts.github.io/Carteira-de-Investimentos/**
-  http://localhost:5500/**
-  http://127.0.0.1:5500/**
-  ```
-  As duas últimas são para desenvolvimento; troque a porta pela que o seu servidor local usa.
-
-Dois detalhes que costumam travar isso:
-
-- **Abrir o `index.html` pelo `file://` nunca funciona.** O `redirectTo` vira um caminho de arquivo e o Supabase recusa. Tem que servir por HTTP.
-- **Mudar a configuração não conserta e-mails já enviados.** O link antigo continua apontando para onde apontava; é preciso pedir um novo.
+O login é o do portal (Supabase Auth): as contas ficam em `auth.users` e a senha é guardada como **hash bcrypt** — não dá para ler a senha de um aluno, nem pelo painel do Supabase. Quando um aluno não consegue entrar, ele usa "Esqueci minha senha" na tela de acesso do portal, ou você manda um link de recuperação em **Authentication → Users** no painel do Supabase. O endereço do portal precisa estar em **Authentication → URL Configuration → Redirect URLs** (veja o README da raiz).
 
 ---
 
 ## Rodando na sua máquina
 
-1. Preencha `frontend/js/config.js` com a URL e a chave anônima do seu projeto Supabase (em **Project Settings → API**). Enquanto isso não estiver preenchido, o app abre numa tela explicando o que falta.
-2. Rode o SQL acima uma vez.
-3. Sirva a pasta por HTTP — abrir o arquivo direto pelo `file://` não funciona por causa das restrições do navegador. Qualquer servidor estático serve, por exemplo a extensão Live Server do VS Code.
+1. Rode o SQL acima uma vez.
+2. Sirva a raiz do portal por HTTP (`npm start` na raiz, ou a extensão Live Server do VS Code) e abra a Carteira pelo portal. Aberta pelo endereço direto, ela leva para o portal.

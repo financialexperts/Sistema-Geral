@@ -2,12 +2,14 @@
 // Teclado como pede o padrão de abas (WAI-ARIA): ← e → trocam e escolhem,
 // Home e End vão às pontas.
 export function ligarAbas(container, { aoEscolher } = {}) {
-  const pilula = container.querySelector('.abas__pilula');
   const abas = () => [...container.querySelectorAll('[role="tab"]')];
 
   // A posição e a largura vêm da aba escolhida (as abas podem ter larguras
-  // diferentes). Sem animar quando é só a janela que mudou de tamanho.
+  // diferentes). Sem animar quando é só a janela que mudou de tamanho. A
+  // pílula é procurada a cada vez: as abas de um sistema são redesenhadas
+  // quando outro sistema abre.
   function posicionar({ animar = true } = {}) {
+    const pilula = container.querySelector('.abas__pilula');
     const escolhida = abas().find(aba => aba.getAttribute('aria-selected') === 'true');
     if (!pilula || !escolhida || !escolhida.offsetWidth) return;
     if (!animar) pilula.style.transition = 'none';

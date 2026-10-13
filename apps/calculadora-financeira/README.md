@@ -1,16 +1,14 @@
 # Calculadora Financeira — 5 funções
 
-As cinco funções da planilha `Calculadora Financeira.xlsx`, cada uma com seu próprio painel no seletor do topo. Sem build: é `index.html` + Supabase (só para o login).
+As cinco funções da planilha `Calculadora Financeira.xlsx`, cada uma com seu próprio painel no seletor do topo. Sem build: é `index.html` + a sessão do portal.
 
 Segue o mesmo padrão visual do *Simulador de Aposentadoria*, mas enxuto: um seletor, só os campos da calculadora, e embaixo o resultado em escala grande com a linha de cores.
 
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Elas ou Master** → **Calculadora Financeira**. A versão original, com login próprio, continua em `Sistemas/`.
+
 ## Login
 
-A calculadora usa **o mesmo login do Fluxo de Caixa**: mesmo projeto Supabase e mesma tela de entrar / criar conta / esqueci a senha. Quem já tem conta no Fluxo de Caixa entra aqui com o mesmo e-mail e senha, e quem cria conta aqui já pode usar o Fluxo de Caixa (lá ele passa pela configuração inicial normalmente).
-
-- `frontend/js/config.js`, `supabaseClient.js` e `auth.js` são cópias idênticas dos arquivos do Fluxo de Caixa. Se mudar um deles lá, copie para cá também.
-- A calculadora não grava nada no banco. Ela só lê `profiles.full_name` para mostrar o nome no topo, e o cadastro grava esse nome em `profiles`, exatamente como no Fluxo de Caixa.
-- **Recuperação de senha:** o link do e-mail volta para a página onde o pedido foi feito. No painel do Supabase, em *Authentication → URL Configuration → Redirect URLs*, a URL da calculadora precisa estar na lista, senão o Supabase manda o aluno para a *Site URL* (o Fluxo de Caixa).
+É o do portal: a calculadora só espera a sessão chegar (`frontend/js/session.js`) para aparecer, e não grava nada no banco. Aberta pelo endereço direto, ela leva para o portal, que pede o login se precisar.
 
 ## As cinco calculadoras
 
@@ -69,21 +67,19 @@ Quando o resultado é um dos casos explicativos acima, a barra some e o card int
 ## Estrutura de arquivos
 
 ```
-index.html                 telas de login e marcação das 5 calculadoras e do seletor
+index.html                 carregando e a marcação das 5 calculadoras e do seletor
 frontend/
   css/styles.css           todo o estilo visual
-  js/config.js             URL e chave do Supabase (a mesma do Fluxo de Caixa)
-  js/supabaseClient.js     inicializa o cliente Supabase
   js/format.js             formatação de número/moeda e parsing de input
-  js/auth.js               tela de entrar / criar conta / esqueci a senha
   js/app.js                validação, eventos, abas, tema — liga as calculadoras à página
-  js/session.js            roteamento por sessão: carregando, login ou calculadora
-  img/                     logos e favicon
+  js/session.js            espera a sessão do portal e mostra a calculadora
+  img/                     favicon
+../compartilhado/          portal.js (sessão, tema, ida ao portal) e supabaseClient.js
 backend/
   js/finance.js            as 5 funções puras (sem DOM)
 ```
 
-Os scripts carregam em ordem (`finance.js` → `config.js` → `supabaseClient.js` → `format.js` → `auth.js` → `app.js` → `session.js`) como globais simples (`Finance`, `Format`, `DB`, `AuthView`), sem bundler. `finance.js` não depende de nada — dá para reaproveitar em Node ou em outro front-end.
+Os scripts carregam em ordem (`portal.js` no `<head>`; depois `finance.js` → `backend/config/supabase.js` do portal → `supabaseClient.js` → `format.js` → `app.js` → `session.js`) como globais simples (`FEPortal`, `Finance`, `Format`, `DB`), sem bundler. `finance.js` não depende de nada — dá para reaproveitar em Node ou em outro front-end.
 
 ## Detalhes técnicos
 
@@ -91,7 +87,7 @@ Os scripts carregam em ordem (`finance.js` → `config.js` → `supabaseClient.j
 - Entrada aceita formato brasileiro (`1.500,50`) e também `1500.50`.
 - Calcula enquanto você digita; `Calcular` força a validação de todos os campos.
 - Validação de campos, mensagens de erro com `role="alert"`, navegação por teclado no seletor (setas ← →).
-- Tema claro/escuro (segue o sistema e memoriza a escolha).
+- Tema claro/escuro (o botão fica no cabeçalho do portal; a escolha vale para todos os sistemas).
 - Responsivo de 320px até desktop; respeita `prefers-reduced-motion`.
 
 ## Aviso

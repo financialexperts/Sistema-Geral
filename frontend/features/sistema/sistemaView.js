@@ -169,15 +169,15 @@ function desenharPaginas(sistema, pagina) {
 }
 
 // ---------- Tema claro/escuro dos sistemas ----------
-// O portal é sempre claro; os sistemas têm os dois temas e guardam a
-// escolha na chave "tema" do navegador. O botão do cabeçalho troca o tema
-// de todos (a moldura recebe na hora, e os outros sistemas, ao abrir).
+// O portal é sempre claro, e os sistemas dentro dele também abrem claros;
+// o escuro vale quando a pessoa escolhe aqui. A escolha fica na chave
+// "tema" do navegador e vale para todos (a moldura recebe na hora, e os
+// outros sistemas, ao abrir — apps/compartilhado/portal.js).
 
 function temaDosSistemas() {
   let guardado = null;
   try { guardado = localStorage.getItem(CHAVE_TEMA); } catch { guardado = null; }
-  if (guardado === 'dark' || guardado === 'light') return guardado;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return guardado === 'dark' ? 'dark' : 'light';
 }
 
 function sincronizarBotaoTema() {

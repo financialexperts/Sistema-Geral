@@ -2,6 +2,8 @@
 
 Três calculadoras simples para planejar a aposentadoria com juros compostos.
 
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Elas ou Master** → **Calculadora de Juros**. A versão original, com login próprio, continua em `Sistemas/`.
+
 ## As calculadoras
 
 1. **Quanto vou ter?** Mostra quanto você acumula poupando um valor por mês.
@@ -12,27 +14,21 @@ A taxa padrão é de 0,5% ao mês acima da inflação (cerca de 6,17% ao ano). V
 
 ## Como usar
 
-Abra o arquivo `index.html` no navegador, entre com seu e-mail e senha (ou crie uma conta) e use as calculadoras. Não precisa de instalação, mas precisa de internet para o login.
+Entre no portal, abra o curso Elas ou o Master e escolha **Calculadora de Juros**. Não precisa de instalação, mas precisa de internet para a sessão do portal.
 
 ## Login
 
-O login é o mesmo do **Fluxo de Caixa**: os dois sistemas usam o mesmo projeto Supabase, então quem já tem conta em um entra no outro com o mesmo e-mail e senha. A tela tem entrar, criar conta, esqueci a senha e definir nova senha (pelo link do e-mail).
-
-A calculadora só usa o login — os cálculos não são salvos no banco. Ao criar conta, o nome vai para a tabela `profiles` (a mesma do Fluxo de Caixa).
-
-Para o link de "esqueci a senha" voltar para a calculadora, o endereço onde ela está publicada precisa estar em **Supabase → Authentication → URL Configuration → Redirect URLs**.
+É o do portal. A calculadora só espera a sessão chegar (`frontend/js/session.js`) para aparecer — os cálculos não são salvos no banco. Aberta pelo endereço direto, ela leva para o portal, que pede o login se precisar.
 
 ## Estrutura
 
 ```
-index.html                  página principal: carregando, login e as calculadoras
+index.html                  página principal: carregando e as calculadoras
 frontend/
   css/styles.css            visual
-  js/config.js              URL e chave do Supabase (mesmo projeto do Fluxo de Caixa)
-  js/supabaseClient.js      inicializa o cliente Supabase
-  js/auth.js                tela de entrar / criar conta / esqueci a senha
-  js/session.js             mostra login ou calculadora conforme a sessão
-  js/app.js                 as três calculadoras, abas e tema
+  js/session.js             espera a sessão do portal e mostra a calculadora
+  js/app.js                 as três calculadoras, abas e tema (o escolhido no portal)
+../compartilhado/           portal.js (sessão, tema, ida ao portal) e supabaseClient.js
 backend/                    cálculos financeiros
 ```
 

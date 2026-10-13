@@ -1,0 +1,11 @@
+{
+  "name": "portal-financial-experts",
+  "private": true,
+  "description": "Portal Financial Experts — os sistemas dos cursos Evolution, Elas e Master num lugar só, com um login só (Supabase).",
+  "scripts": {
+    "start": "node servidor.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

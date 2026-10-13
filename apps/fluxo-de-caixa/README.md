@@ -1,33 +1,33 @@
 # Meu Fluxo de Caixa
 
-App para alunos controlarem a própria receita e gastos mês a mês, com login individual e uma planilha visual que mostra o quanto cada um está economizando. Sem build: é `index.html` + Supabase.
+App para alunos controlarem a própria receita e gastos mês a mês, com a conta de cada um e uma planilha visual que mostra o quanto cada um está economizando. Sem build: é `index.html` + Supabase.
+
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Evolution** → **Fluxo de Caixa**. A versão original, com login próprio, continua em `Sistemas/`.
 
 ## Como funciona
 
-1. O aluno abre o link, cria uma conta com e-mail e senha (bem simples, só isso).
+1. O aluno entra no portal (com a conta de sempre, ou criando uma) e abre o Fluxo de Caixa no curso Evolution.
 2. Na primeira vez, três etapas rápidas: quanto ele recebe por mês, quais são os gastos dele e quanto cada um custa por mês (lanches, roupas, tênis, etc.), e por quantos meses ele quer planejar (a partir do mês atual).
 3. Depois disso, ele cai direto na "planilha", já preenchida para todo o período escolhido: um gasto por linha e um mês por coluna, com receita, total de gastos, saldo do mês e saldo acumulado calculados sozinhos. Uma segunda aba, "Realizada", usa a mesma grade para comparar o que foi gasto de verdade com o que foi projetado — célula por célula, verde quando gastou menos, vermelha quando gastou mais.
 4. Um painel no topo mostra o quanto ele já economizou no total e quanto economizou no mês — pensado para ser motivador. O mesmo painel aparece na aba "Realizada", mas com os números de verdade.
 
-Cada aluno só vê os próprios dados (login separado, protegido por RLS no banco).
+Cada aluno só vê os próprios dados (cada conta só lê as próprias linhas: RLS no banco).
 
 ## Estrutura de arquivos
 
 ```
-index.html                     shell com as 3 telas: login, primeira configuração e planilha
+index.html                     shell com as telas: carregando, primeira configuração e planilha
 frontend/
   css/styles.css                todo o estilo visual
-  js/config.js                  URL e chave do Supabase
-  js/supabaseClient.js          inicializa o cliente Supabase
   js/format.js                  formatação de moeda e parsing de input
   js/dialog.js                  janelas de confirmação próprias do app (remover gasto/mês)
   js/chart.js                   gráfico do saldo acumulado
-  js/auth.js                    tela de entrar / criar conta / esqueci a senha
   js/onboarding.js              as duas etapas da primeira configuração
   js/sheet.js                   a planilha, os cálculos e a gravação no Supabase
-  js/app.js                     roteamento por sessão, tema, liga tudo
+  js/app.js                     espera a sessão do portal, decide configuração ou planilha, liga tudo
 backend/
   js/finance.js                 funções puras de cálculo (sem DOM): meses, totais, saldo acumulado
+../compartilhado/               portal.js (sessão, tema, ida ao portal) e supabaseClient.js
 ```
 
 ## Modelo de dados

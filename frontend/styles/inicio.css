@@ -54,6 +54,7 @@
   border-radius: var(--raio-portal);
   box-shadow: 0 30px 70px -14px color-mix(in srgb, var(--cor) 90%, transparent);
   opacity: 0;
+  will-change: opacity;
   transition: opacity 500ms var(--suave);
 }
 .portais > li:is(:hover, :focus-within)::before { opacity: 1; }
@@ -105,7 +106,8 @@
   background: radial-gradient(circle, rgb(255 255 255 / 0.55), transparent 62%);
 }
 
-/* O véu que esmaece os outros portais enquanto um está sob o mouse */
+/* O véu que esmaece os outros portais enquanto um está sob o mouse: escuro
+   nos portais escuros, claro no portal claro (para não acinzentar). */
 .portal__veu {
   position: absolute;
   inset: 0;
@@ -115,8 +117,10 @@
   pointer-events: none;
   transition: opacity 450ms var(--suave);
 }
+.portal[data-tom="claro"] .portal__veu { background: #FFFFFF; }
 @media (hover: hover) {
-  .portais:has(> li:hover) > li:not(:hover) .portal__veu { opacity: 0.18; }
+  .portais:has(> li:hover) > li:not(:hover) .portal__veu { opacity: 0.2; }
+  .portais:has(> li:hover) > li:not(:hover) .portal[data-tom="claro"] .portal__veu { opacity: 0.4; }
 }
 
 .portal__conteudo {
@@ -264,6 +268,7 @@
   .portal__detalhes {
     opacity: 0;
     transform: translateY(10px);
+    will-change: opacity, transform;
     transition: opacity 450ms var(--suave), transform 450ms var(--suave);
   }
   .portal:is(:hover, :focus-visible) .portal__detalhes {
@@ -296,6 +301,7 @@
   z-index: -1;
   background: #FFFFFF;
   opacity: 0;
+  will-change: opacity;
   transition: opacity 400ms var(--suave);
 }
 [data-tom="claro"] .portal__cta {

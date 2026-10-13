@@ -5,7 +5,9 @@
 
 Simulação em que o aluno escolhe como a Laura vai gerar renda, com R$ 30.000 de capital e 10 horas por dia. Ele combina fontes de renda (salário, investimentos, negócio próprio) e vê quanto cada combinação rendeu. Depois, um elemento surpresa mostra o que aconteceu com essa renda na pandemia.
 
-Não tem build, instalação nem banco de dados: é `index.html` + alguns arquivos `.js` e `.css` estáticos, na identidade visual da Financial Experts. Para rodar, basta abrir o `index.html` no navegador (ou publicar a pasta no GitHub Pages).
+Não tem build, instalação nem banco de dados: é `index.html` + alguns arquivos `.js` e `.css` estáticos, na identidade visual da Financial Experts.
+
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Evolution** → **Laura**. A versão original, com login próprio, continua em `Sistemas/`. Ela não usa o banco: o portal só garante que quem abre é um aluno logado.
 
 ---
 
@@ -78,7 +80,7 @@ frontend/
   js/options.js                 os cartões das opções, os valores ajustáveis e os medidores
   js/result.js                  o resultado dos primeiros meses e a análise da escolha
   js/pandemic.js                o elemento surpresa: a renda depois da pandemia
-  js/app.js                     tema claro/escuro, a Laura, as animações dos ícones,
+  js/app.js                     tema (o escolhido no portal), a Laura, as animações dos ícones,
                                 botões principais, liga tudo
 backend/
   js/scenario.js                o ponto de partida da Laura: capital, horas e objetivo

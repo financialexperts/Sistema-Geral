@@ -98,6 +98,7 @@
 .arte--neon .arte__neon--forte {
   filter: drop-shadow(0 0 4px var(--cor-brilho)) drop-shadow(0 0 22px var(--cor)) drop-shadow(0 0 40px var(--cor));
   opacity: 0;
+  will-change: opacity;
   transition: opacity 600ms var(--suave);
 }
 .arte--neon .arte__moldura {

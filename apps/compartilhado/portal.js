@@ -68,13 +68,20 @@
   }
 
   /* ============ tema claro/escuro ============ */
-  // O botão do cabeçalho do portal grava a escolha na chave "tema" (a mesma
-  // que os sistemas sempre leram) e avisa a moldura; trocada em outra aba,
-  // chega pelo evento "storage".
+  // Dentro do portal (que é sempre claro), os sistemas abrem claros; o
+  // escuro vale só quando a pessoa escolhe no botão do cabeçalho do portal,
+  // que grava a escolha na chave "tema" (a mesma que os sistemas sempre
+  // leram) e avisa a moldura. Trocada em outra aba, chega pelo "storage".
   function aplicarTema(tema) {
     if (tema !== "dark" && tema !== "light") return;
     document.documentElement.setAttribute("data-theme", tema);
   }
+  function temaEscolhido() {
+    try { return global.localStorage.getItem("tema") || "light"; } catch (err) { return "light"; }
+  }
+  // Depois dos scripts do sistema (que seguiam o tema do aparelho quando
+  // não havia escolha), vale a regra do portal.
+  document.addEventListener("DOMContentLoaded", function () { aplicarTema(temaEscolhido()); });
   global.addEventListener("storage", function (evento) {
     if (evento.key === "tema" && evento.newValue) aplicarTema(evento.newValue);
   });

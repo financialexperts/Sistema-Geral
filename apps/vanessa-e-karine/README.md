@@ -1,12 +1,15 @@
 # Equilibrista de Escolhas – Vanessa e Karine
 
-Duas atividades, cada uma numa aba no alto da tela, e um login na frente das duas:
+Duas atividades, cada uma numa aba no cabeçalho do portal:
+
+> **No portal Financial Experts.** Este sistema roda dentro do portal (a raiz deste repositório), numa moldura, e não tem login próprio: o aluno entra uma vez no portal e chega aqui já com a sessão (`apps/compartilhado/portal.js`). Entrar, criar conta, esqueci a senha, o nome e o botão de sair, a barra do topo e o botão de tema claro/escuro são do portal. O banco é o mesmo de todos os sistemas, configurado em `backend/config/supabase.js`. No portal: **Evolution** → **Vanessa e Karine**. A versão original, com login próprio, continua em `Sistemas/`. As duas abas ("Vanessa e Karine" e "Seu dinheiro no tempo") são as `paginas` do sistema no catálogo do portal (`backend/config/catalogo.js`).
+
 
 - **Vanessa e Karine** (`index.html`): o exercício em que o próprio aluno faz os cálculos da planilha "Escolhas Karine e Vanessa - PROFESSOR". São as 4 decisões que a Vanessa e a Karine tomaram ao longo de 40 anos. Em cada uma, ele usa os dados da história para preencher as contas, confere as respostas e, no fim, calcula a diferença total entre as duas (R$ 2.054.300,00). As 4 decisões e a diferença total são 5 etapas, feitas uma de cada vez: a próxima só abre quando todos os cálculos da etapa estão certos.
 - **Seu dinheiro no tempo** (`dinheiro-no-tempo.html`): um jogo de escolhas no estilo do Kahoot, para alunos de 13 a 16 anos. São 10 rodadas, do fácil ao difícil, com 3 ou 4 opções. Os pontos não vêm de acertar nem de ser rápido: cada escolha é de um tipo, e cada tipo dá ou tira pontos em 4 categorias (**receita**, **patrimônio**, **conhecimento** e **bem-estar**). No fim, o placar mostra quantos pontos o aluno fez em cada categoria, e o ranking geral, quem fez mais em cada uma. Veja [Seu dinheiro no tempo](#seu-dinheiro-no-tempo).
-- **O login** é o mesmo do Fluxo de Caixa, com o mesmo banco (Supabase): quem já tem conta lá entra aqui com o mesmo e-mail e a mesma senha. Veja [O login](#o-login).
+- **O login** é o do portal, com o mesmo banco (Supabase) de todos os sistemas. Veja [O login](#o-login).
 
-Não tem build nem instalação: são páginas `.html` + alguns arquivos `.js` e `.css` estáticos, na mesma identidade visual do Simulador de Renda da Laura. As contas ficam no Supabase do Fluxo de Caixa. Para rodar, basta publicar a pasta no GitHub Pages (ou abrir o `index.html` no navegador, com internet, por causa do login).
+Não tem build nem instalação: são páginas `.html` + alguns arquivos `.js` e `.css` estáticos, na mesma identidade visual do Simulador de Renda da Laura. As contas ficam no Supabase de todos os sistemas.
 
 
 ## O caminho do aluno
@@ -156,15 +159,9 @@ O ranking fica no Supabase do login, na tabela `game_scores`: uma linha por alun
 
 ## O login
 
-As duas páginas abrem numa tela de **Entrar / Criar conta**, a mesma do Fluxo de Caixa e com o mesmo banco: o projeto Supabase `xorqsuqjmvkyzgagdxfz`, em [`frontend/js/config.js`](frontend/js/config.js). Quem já tem conta no Fluxo de Caixa entra com o mesmo e-mail e a mesma senha, e quem cria a conta aqui também pode usar ela lá. A atividade só aparece depois que o aluno entra. No alto, ficam o nome dele e o botão **Sair**.
+É o do portal, com o mesmo banco de todos os sistemas (o projeto Supabase `xorqsuqjmvkyzgagdxfz`, em `backend/config/supabase.js` na raiz). As duas páginas esperam a sessão do portal (`frontend/js/session.js`) e só então a atividade aparece. **Criar conta**, **Esqueci minha senha** e **Sair** ficam no portal; saindo, a moldura do sistema é descartada, então nada do aluno anterior fica na tela.
 
-- **Criar conta** pede o nome completo, o e-mail e uma senha de pelo menos 6 caracteres. O nome vai pros dados do login e pra tabela `profiles` (a mesma do Fluxo de Caixa). Se o projeto pedir a confirmação do e-mail, a tela avisa que o link foi enviado.
-- **Esqueceu a senha?** manda um link pro e-mail. O link volta pra página em que o aluno estava, que pede a senha nova.
-- **Sair** volta pra tela de entrar. A página recarrega, pra nada do aluno anterior ficar na tela.
-
-Pra os links do e-mail (trocar a senha, confirmar a conta) voltarem pra este sistema, e não pro Fluxo de Caixa, o endereço dele tem que estar em **Authentication → URL Configuration → Redirect URLs**, no painel do Supabase. No GitHub Pages, é algo como `https://financialexperts.github.io/Escolhas-Vanessa-e-Karine/**`.
-
-O banco guarda as contas e o resultado de cada jogo do Seu dinheiro no tempo, pro ranking (veja [O ranking](#o-ranking)). O andamento das atividades (os cálculos feitos, a rodada em que o aluno está) fica guardado no navegador, separado por conta (veja [O que fica guardado no navegador](#o-que-fica-guardado-no-navegador)). O nome do topo, do placar e do ranking é o "Nome completo" do Criar conta.
+O banco guarda as contas e o resultado de cada jogo do Seu dinheiro no tempo, pro ranking (veja [O ranking](#o-ranking)). O andamento das atividades (os cálculos feitos, a rodada em que o aluno está) fica guardado no navegador, separado por conta (veja [O que fica guardado no navegador](#o-que-fica-guardado-no-navegador)). O nome do placar e do ranking é o "Nome completo" do Criar conta.
 
 ---
 
@@ -175,16 +172,11 @@ index.html                      Vanessa e Karine: abertura, como fazer, linha do
                                 decisões, diferença total e diferença final
 dinheiro-no-tempo.html          Seu dinheiro no tempo: abertura, rodadas e placar
 frontend/
-  css/styles.css                o visual das duas páginas (identidade Financial Experts),
-                                as abas do topo e o login
+  css/styles.css                o visual das duas páginas (identidade Financial Experts)
   css/game.css                  o visual que é só do jogo Seu dinheiro no tempo
-  img/                          logos, favicon e as duas (vanessa.png e karine.png, já
-                                sem fundo; Vanessa.jpg e Karine.avif são as originais)
-  js/config.js                  o projeto Supabase do login (o mesmo do Fluxo de Caixa)
-  js/supabaseClient.js          liga o cliente do Supabase
-  js/auth.js                    a tela de entrar / criar conta / esqueci a senha
-  js/session.js                 o login das duas páginas: qual tela aparece, quem entrou,
-                                o botão de sair; a atividade só começa depois dele
+  img/                          favicon e as duas (vanessa.png e karine.png, já sem fundo)
+  js/session.js                 a sessão do portal nas duas páginas: quem entrou e o nome;
+                                a atividade só começa depois dela
   js/ui.js                      o que as duas páginas têm em comum: tema claro/escuro,
                                 o brilho do vidro e as animações dos ícones
   js/format.js                  formatação de dinheiro, porcentagem, anos, meses, trocas
@@ -257,9 +249,8 @@ Os arquivos em `backend/js/` não tocam no DOM: são só dados. O `exercise.js`,
 | Quantos aparecem no ranking e de quanto em quanto tempo ele se atualiza | `TOP` e `POLL`, no `frontend/js/ranking.js` |
 | Os textos fixos do jogo (títulos, abertura, rodapé) | `dinheiro-no-tempo.html` |
 | O visual do jogo | `frontend/css/game.css` |
-| **Login:** o projeto Supabase | `frontend/js/config.js` |
-| Os textos da tela de entrar e as mensagens de erro | `markup()` e `friendlyError()`, no `frontend/js/auth.js` |
-| As abas do topo (uma por atividade) | o `<nav class="tabs">` no alto de `index.html` e de `dinheiro-no-tempo.html` (a mesma lista nas duas) |
+| O banco (projeto Supabase) | `backend/config/supabase.js`, na raiz do portal |
+| As abas das atividades | `paginas` do sistema em `backend/config/catalogo.js`, na raiz do portal |
 
 Cada conta de `decisions.js` é uma lista como `["desv", "×", "preco"]`: os nomes são linhas de cima da mesma pessoa, `"v.total"` e `"k.total"` são linhas da Vanessa e da Karine (usado na diferença), e `"years"` são os anos que a decisão pesa (40, 32 ou 25). Um número fixo é `{ n: 12, unit: "meses" }`. A dica que o aluno vê quando erra é essa mesma conta, escrita com os nomes das linhas. Nos textos, `{v.perda}` e `{k.perda}` viram os valores da Vanessa e da Karine, `{diff}` a diferença entre as duas, `{years}` os anos da decisão e `{end}` o último ano do período.
 
@@ -269,15 +260,10 @@ A cor de cada uma (rosa para a Vanessa, azul para a Karine) aparece no fundo do 
 
 ## O que fica guardado no navegador
 
-- **O tema** claro ou escuro, no `localStorage`, com a mesma chave (`tema`) do Simulador de Renda e do Fluxo de Caixa: publicados no mesmo endereço, os sistemas lembram do mesmo tema.
+- **O tema** claro ou escuro, no `localStorage`, com a mesma chave (`tema`) de todos os sistemas: o botão fica no cabeçalho do portal e vale para todos.
 - **O exercício** da Vanessa e da Karine, na chave `equilibrista-calculos:` + o id da conta: o que o aluno digitou, as células certas e as etapas já conferidas. Recarregar a página não apaga nada (a tela volta na etapa em que o aluno parou), e **Recomeçar o exercício** apaga tudo.
 - **O jogo** Seu dinheiro no tempo, na chave `dinheiro-no-tempo:` + o id da conta: a escolha de cada rodada e o apelido. Recarregar volta na rodada em que o aluno parou. (O resultado de cada jogo terminado também vai pro Supabase, pro ranking.)
-- **A sessão do login**, guardada pelo próprio Supabase.
+- **A sessão do login** do portal, guardada pelo próprio Supabase.
 
-O que o aluno faz fica guardado só naquele navegador, mas separado por conta: num computador compartilhado, cada aluno que entra vê só o que ele fez (e quem sai volta pra tela de entrar). O exercício feito antes de existir o login (na chave antiga, `equilibrista-calculos`) passa pra primeira conta que entrar naquele navegador. Numa janela anônima (ou com o armazenamento bloqueado), tudo funciona igual, só não lembra depois de recarregar. Se os dados de `decisions.js` mudarem, uma célula guardada como certa que não bate mais com a conta nova volta a ficar em aberto; se as rodadas de `rounds.js` mudarem, uma escolha que não existe mais é esquecida.
+O que o aluno faz fica guardado só naquele navegador, mas separado por conta: num computador compartilhado, cada aluno que entra vê só o que ele fez (e quem sai volta pra tela de entrar do portal). O exercício feito antes de existir o login (na chave antiga, `equilibrista-calculos`) passa pra primeira conta que entrar naquele navegador. Numa janela anônima (ou com o armazenamento bloqueado), tudo funciona igual, só não lembra depois de recarregar. Se os dados de `decisions.js` mudarem, uma célula guardada como certa que não bate mais com a conta nova volta a ficar em aberto; se as rodadas de `rounds.js` mudarem, uma escolha que não existe mais é esquecida.
 
----
-
-## A versão anterior
-
-`_backup-sistema-de-escolhas.zip` é o sistema de antes, em que o aluno escolhia o caminho de uma das duas e revelava os cálculos prontos. Ele está no `.gitignore` (não vai junto quando a pasta vai pro GitHub) e pode ser apagado quando não fizer mais falta.
