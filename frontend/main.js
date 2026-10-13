@@ -3,7 +3,7 @@ import { buscarPerfil } from '../backend/api/perfilRepo.js';
 import {
   cursoPorId, cursosDoSistema, listarCursos, paginaDoSistema, sistemaPorId,
 } from '../backend/domain/catalogo.js';
-import { desenharMarcas, escapeHtml } from './shared/dom.js';
+import { escapeHtml } from './shared/dom.js';
 import { marcarChegada, trocarComTransicao } from './shared/transicao.js';
 import { conferirSessao, iniciarAutenticacao, sair } from './features/auth/auth.js';
 import {
@@ -37,7 +37,6 @@ window.FinancialExperts = {
 
 const app = document.getElementById('app');
 
-desenharMarcas();
 desenharCursosDoAcesso();
 iniciarAvisoDeCookies();
 

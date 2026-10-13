@@ -23,7 +23,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: titulo-cores 14s linear infinite;
+  animation: titulo-cores 24s linear infinite;
 }
 @keyframes titulo-cores { to { background-position: 300% 0; } }
 .inicio__descricao { color: var(--rotulo-2); text-wrap: pretty; }
@@ -39,7 +39,7 @@
   display: flex;
   flex: 1 1 0;
   min-width: 0;
-  transition: flex-grow var(--lento) var(--mola);
+  transition: flex-grow 700ms var(--suave);
 }
 
 .portal {
@@ -57,8 +57,8 @@
     0 2px 6px rgb(0 0 0 / 0.08),
     0 28px 60px -28px color-mix(in srgb, var(--cor) 70%, transparent);
   transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--sobe, 0px));
-  transition: transform var(--medio) var(--mola), box-shadow var(--medio) ease, filter var(--medio) ease;
-  animation: portal-entra 900ms var(--mola) backwards;
+  transition: transform 600ms var(--suave), box-shadow 600ms var(--suave), filter 600ms var(--suave);
+  animation: portal-entra 900ms var(--suave) backwards;
   animation-delay: calc(var(--i, 0) * 110ms + 60ms);
   -webkit-tap-highlight-color: transparent;
 }
@@ -83,7 +83,7 @@
   background: radial-gradient(28rem circle at var(--px, 50%) var(--py, 30%), rgb(255 255 255 / 0.16), transparent 45%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--medio) ease;
+  transition: opacity 600ms var(--suave);
 }
 
 .portal:hover,
@@ -94,7 +94,7 @@
     0 40px 80px -30px color-mix(in srgb, var(--cor) 90%, transparent);
 }
 .portal:hover::after { opacity: 1; }
-.portal:active { --sobe: -2px; transition-duration: var(--rapido); }
+.portal:active { --sobe: -3px; }
 .portal:focus-visible { outline: 3px solid var(--cor-texto); outline-offset: 4px; }
 
 /* Janela larga com mouse: o portal escolhido cresce e os outros recuam */
@@ -157,11 +157,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--cor-brilho);
-  box-shadow: 0 0 0 0 var(--cor-brilho);
-  animation: selo-pulsa 1.8s ease-out infinite;
-}
-@keyframes selo-pulsa {
-  to { box-shadow: 0 0 0 7px transparent; }
 }
 
 /* A logo ocupa o meio: o tamanho acompanha a largura e a altura que
@@ -176,27 +171,26 @@
 .portal__logo-caixa {
   position: relative;
   display: block;
-  transition: transform var(--lento) var(--salto);
+  transition: transform 700ms var(--suave);
 }
-.portal:is(:hover, :focus-visible) .portal__logo-caixa { transform: scale(1.06); }
+.portal:is(:hover, :focus-visible) .portal__logo-caixa { transform: scale(1.04); }
 .portal__logo {
   display: block;
   width: min(21rem, 88cqw);
   height: auto;
   max-height: 94cqh;
   object-fit: contain;
-  transition: filter var(--medio) ease;
+  transition: filter 600ms var(--suave);
 }
 .portal[data-arte="aurora"] .portal__logo { width: min(17rem, 74cqw); }
 
-/* Evolution: a logo de neon acende piscando e brilha mais sob o mouse */
+/* Evolution: a logo de neon acende devagar e brilha mais sob o mouse */
 .portal[data-arte="neon"] .portal__logo {
   filter: drop-shadow(0 0 14px color-mix(in srgb, var(--cor) 55%, transparent));
-  animation: neon-liga 1.4s steps(1, end) 0.45s backwards;
+  animation: neon-acende 1.6s var(--suave) 0.35s backwards;
 }
 .portal[data-arte="neon"]:is(:hover, :focus-visible) .portal__logo {
-  filter: drop-shadow(0 0 10px var(--cor-brilho)) drop-shadow(0 0 28px var(--cor));
-  animation: neon-falha 0.9s steps(1, end);
+  filter: drop-shadow(0 0 10px var(--cor-brilho)) drop-shadow(0 0 24px var(--cor));
 }
 
 /* Elas e Master: um brilho atravessa as letras (a própria logo é a
@@ -204,7 +198,7 @@
 .portal__brilho {
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.95) 50%, transparent 65%);
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%);
   background-size: 260% 100%;
   background-position: 130% 0;
   -webkit-mask: var(--logo) center / contain no-repeat;
@@ -214,7 +208,7 @@
 }
 .portal[data-arte="neon"] .portal__brilho { display: none; }
 .portal:is(:hover, :focus-visible) .portal__brilho {
-  animation: brilho-letras 1.6s ease-in-out;
+  animation: brilho-letras 2.4s var(--suave);
 }
 @keyframes brilho-letras {
   0% { opacity: 1; background-position: 130% 0; }
@@ -223,7 +217,7 @@
 
 /* Master: a logo entra deslizando da esquerda, como as peças do M */
 .portal[data-arte="geometria"] .portal__logo {
-  animation: logo-desliza 900ms var(--mola) 0.4s backwards;
+  animation: logo-desliza 1.1s var(--suave) 0.35s backwards;
 }
 @keyframes logo-desliza {
   from { opacity: 0; transform: translateX(-24px); clip-path: inset(0 100% 0 0); }
@@ -268,7 +262,7 @@
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
-    transition: grid-template-rows var(--lento) var(--mola), opacity var(--medio) ease;
+    transition: grid-template-rows 650ms var(--suave), opacity 500ms var(--suave);
   }
   .portal__detalhes > div { min-height: 0; overflow: hidden; }
   .portal:is(:hover, :focus-visible) .portal__detalhes {
@@ -291,7 +285,7 @@
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   font-weight: 600;
-  transition: background-color var(--medio) ease, color var(--medio) ease, border-color var(--medio) ease;
+  transition: background-color 500ms var(--suave), color 500ms var(--suave), border-color 500ms var(--suave);
 }
 [data-tom="claro"] .portal__cta {
   border-color: color-mix(in srgb, var(--cor) 25%, transparent);
@@ -305,7 +299,7 @@
   height: 34px;
   border-radius: 50%;
   background: rgb(255 255 255 / 0.18);
-  transition: transform var(--medio) var(--salto), background-color var(--medio) ease, color var(--medio) ease;
+  transition: transform 500ms var(--suave), background-color 500ms var(--suave), color 500ms var(--suave);
 }
 .portal__seta .icone { width: 18px; height: 18px; stroke-width: 2.2; }
 [data-tom="claro"] .portal__seta { background: var(--cor-texto); color: #FFFFFF; }
@@ -350,8 +344,8 @@
   background: var(--superficie);
   box-shadow: var(--sombra-cartao);
   text-decoration: none;
-  transition: box-shadow var(--medio) ease, transform var(--medio) var(--mola);
-  animation: portal-entra 900ms var(--mola) 420ms backwards;
+  transition: box-shadow 500ms var(--suave), transform 500ms var(--suave);
+  animation: portal-entra 900ms var(--suave) 420ms backwards;
 }
 .continuar__link:hover { box-shadow: var(--sombra-cartao-hover); transform: translateY(-2px); }
 .continuar__link:active { transform: scale(0.99); }
@@ -367,7 +361,7 @@
   height: 18px;
   color: var(--rotulo-3);
   stroke-width: 2.2;
-  transition: transform var(--medio) var(--salto);
+  transition: transform 500ms var(--suave);
 }
 .continuar__link:hover .continuar__seta { transform: translateX(3px); color: var(--cor-texto); }
 

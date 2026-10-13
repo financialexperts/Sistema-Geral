@@ -52,12 +52,3 @@ export function ocupado(botao, textoEsperando) {
     botao.removeAttribute('aria-busy');
   };
 }
-
-// A marca Financial Experts (as cinco barras), copiada do <template> do
-// index.html para cada lugar marcado com data-marca.
-export function desenharMarcas() {
-  const modelo = document.getElementById('modelo-marca');
-  for (const lugar of document.querySelectorAll('[data-marca]')) {
-    lugar.replaceWith(modelo.content.firstElementChild.cloneNode(true));
-  }
-}

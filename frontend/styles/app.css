@@ -457,8 +457,24 @@
   .aviso-cookies { flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; }
 }
 
-/* Leitura do que mudou na tela (leitor de tela), sem aparecer */
-.aviso-tela { position: absolute; }
+/* ---------- Troca de tela (View Transitions) ----------
+   O portal do curso vira o banner (arte-curso, logo-curso) e o cartão do
+   sistema vira a moldura (janela-sistema, icone-sistema). As imagens das
+   duas telas cobrem a caixa em vez de esticar, para nada se deformar no
+   caminho. O resto da tela só cruza. */
+::view-transition-group(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 260ms; }
+::view-transition-old(arte-curso),
+::view-transition-new(arte-curso),
+::view-transition-old(janela-sistema),
+::view-transition-new(janela-sistema) {
+  height: 100%;
+  object-fit: cover;
+}
 
 @media (forced-colors: active) {
   .barra-lateral, .menu-conta, .aviso-cookies { border: 1px solid CanvasText; }

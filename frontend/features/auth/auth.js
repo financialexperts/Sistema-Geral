@@ -1,6 +1,6 @@
 import { sb, SUPABASE_URL } from '../../../backend/api/supabaseClient.js';
 import { salvarNome } from '../../../backend/api/perfilRepo.js';
-import { esperar, movimentoReduzido, ocupado } from '../../shared/dom.js';
+import { ocupado } from '../../shared/dom.js';
 import { ligarAbas } from '../../shared/abas.js';
 
 // Tela de acesso do portal: entrar, criar conta, pedir o link de
@@ -11,7 +11,6 @@ import { ligarAbas } from '../../shared/abas.js';
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHAVE_RECUPERACAO = 'fe-portal:recuperacao-pendente';
-const DURACAO_ALINHAR = 540; // tempo das barras se alinharem (auth.css)
 
 const telaInicial = document.getElementById('tela-inicial');
 const tela = document.getElementById('tela-auth');
@@ -115,19 +114,14 @@ async function aoEnviarLogin(evento) {
   if (!senha) return mostrarErro('login', 'Digite sua senha.', 'login-senha');
 
   const liberar = ocupado(campo('btn-entrar'), 'Entrando…');
-  const animar = !movimentoReduzido();
-  cartao.classList.toggle('alinhando', animar);
+  cartao.classList.add('entrando');
   entrandoPeloFormulario = true;
 
-  // Espera as barras terminarem de se alinhar, para o gesto não ser cortado
-  // no meio quando o servidor responde rápido.
-  const [{ data, error }] = await Promise.all([
-    sb.auth.signInWithPassword({ email, password: senha }).catch(erro => ({ data: {}, error: erro })),
-    esperar(animar ? DURACAO_ALINHAR : 0),
-  ]);
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: senha })
+    .catch(erro => ({ data: {}, error: erro }));
 
   entrandoPeloFormulario = false;
-  cartao.classList.remove('alinhando');
+  cartao.classList.remove('entrando');
   liberar();
   if (error) return mostrarErro('login', mensagemErroLogin(error), 'login-senha');
 
@@ -148,21 +142,17 @@ async function aoCriarConta(evento) {
   if (senha.length < 6) return mostrarErro('cadastro', 'A senha precisa ter pelo menos 6 caracteres.', 'cadastro-senha');
 
   const liberar = ocupado(campo('btn-criar-conta'), 'Criando conta…');
-  const animar = !movimentoReduzido();
-  cartao.classList.toggle('alinhando', animar);
+  cartao.classList.add('entrando');
   entrandoPeloFormulario = true;
 
-  const [{ data, error }] = await Promise.all([
-    sb.auth.signUp({
-      email,
-      password: senha,
-      options: { data: { full_name: nome }, emailRedirectTo: enderecoDoPortal() },
-    }).catch(erro => ({ data: {}, error: erro })),
-    esperar(animar ? DURACAO_ALINHAR : 0),
-  ]);
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: senha,
+    options: { data: { full_name: nome }, emailRedirectTo: enderecoDoPortal() },
+  }).catch(erro => ({ data: {}, error: erro }));
 
   entrandoPeloFormulario = false;
-  cartao.classList.remove('alinhando');
+  cartao.classList.remove('entrando');
   liberar();
   if (error) {
     const naSenha = error.code === 'weak_password' || /password/i.test(error.message ?? '');

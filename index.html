@@ -100,20 +100,9 @@
   <p style="padding:24px;text-align:center">Ative o JavaScript do navegador para usar os sistemas da Financial Experts.</p>
 </noscript>
 
-<!-- As barras da marca Financial Experts (logo): direita, esquerda, direita… -->
-<template id="modelo-marca">
-  <svg class="marca-barras" viewBox="0 0 70 62" aria-hidden="true" focusable="false">
-    <rect class="barra-dir" x="35" y="0" width="35" height="12.4" rx="1.2"/>
-    <rect class="barra-esq" x="0" y="12.4" width="35" height="12.4" rx="1.2"/>
-    <rect class="barra-dir" x="35" y="24.8" width="35" height="12.4" rx="1.2"/>
-    <rect class="barra-esq" x="0" y="37.2" width="35" height="12.4" rx="1.2"/>
-    <rect class="barra-dir" x="35" y="49.6" width="35" height="12.4" rx="1.2"/>
-  </svg>
-</template>
-
 <!-- ============ ABERTURA (enquanto confere se já há sessão) ============ -->
 <div class="tela-inicial" id="tela-inicial" role="status" aria-label="Carregando">
-  <div class="marca" data-marca></div>
+  <img class="marca__logo" src="frontend/img/financial-experts.png" alt="Financial Experts" width="202" height="62">
 </div>
 
 <!-- ============ ACESSO ============ -->
@@ -126,8 +115,7 @@
 
   <div class="cartao-auth" id="cartao-auth">
     <div class="marca">
-      <div data-marca></div>
-      <span class="marca__nome">Financial Experts</span>
+      <img class="marca__logo" src="frontend/img/financial-experts.png" alt="Financial Experts" width="202" height="62">
     </div>
 
     <!-- Entrar ou criar conta -->
@@ -385,7 +373,7 @@
     <section class="conteudo conteudo--sistema" data-tela="sistema" aria-labelledby="titulo-sistema" hidden>
       <div class="moldura" id="moldura">
         <div class="carregando-sistema" id="carregando-sistema" hidden>
-          <span class="carregando-sistema__icone" id="carregando-icone" aria-hidden="true"></span>
+          <span class="icone-sistema carregando-sistema__icone" id="carregando-icone" aria-hidden="true"></span>
           <p class="carregando-sistema__texto" id="carregando-texto">Abrindo…</p>
           <span class="carregando-sistema__barra" aria-hidden="true"></span>
         </div>

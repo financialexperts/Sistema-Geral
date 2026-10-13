@@ -104,7 +104,8 @@
 
   --largura-barra: 15.5rem;
   --mola: cubic-bezier(0.32, 0.72, 0, 1);
-  --salto: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --salto: cubic-bezier(0.3, 1.12, 0.5, 1);   /* um quase nada de sobra, sem quicar */
+  --suave: cubic-bezier(0.22, 0.61, 0.36, 1);
   --rapido: 160ms;
   --medio: 320ms;
   --lento: 560ms;

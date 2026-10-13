@@ -1,0 +1,144 @@
+/* ============================================================
+   SISTEMA ABERTO — a moldura onde o sistema roda (um iframe da mesma
+   origem), em vidro como uma janela, ocupando o resto da tela. Enquanto
+   ele abre, o ícone do sistema pulsa em anéis na cor do curso. No
+   celular, a moldura vai de borda a borda.
+   ============================================================ */
+
+.conteudo--sistema {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--margem) var(--margem);
+}
+
+.moldura {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--contorno);
+  border-radius: var(--raio-painel);
+  background: var(--superficie);
+  box-shadow: var(--sombra-painel);
+}
+
+.moldura__sistema {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.moldura > .estado {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: auto;
+  height: fit-content;
+  padding: var(--e-4);
+}
+
+@media (max-width: 599px) {
+  .conteudo--sistema { padding: 0; }
+  .moldura {
+    border-width: 1px 0 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* ---------- Abrindo… ---------- */
+
+.carregando-sistema {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--e-4);
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--cor) 14%, var(--superficie)) 0%, var(--superficie) 55%);
+  transition: opacity 320ms ease;
+}
+.carregando-sistema.saindo { opacity: 0; pointer-events: none; }
+
+.carregando-sistema__icone {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  animation: carregando-flutua 1.6s ease-in-out infinite alternate;
+}
+.carregando-sistema__icone .icone { width: 58%; height: 58%; }
+/* Dois anéis saindo do ícone, na cor do curso */
+.carregando-sistema__icone::before,
+.carregando-sistema__icone::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--cor);
+  border-radius: 24px;
+  opacity: 0;
+  animation: carregando-anel 1.8s ease-out infinite;
+}
+.carregando-sistema__icone::after { animation-delay: 0.9s; }
+@keyframes carregando-anel {
+  from { opacity: 0.7; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.7); }
+}
+@keyframes carregando-flutua {
+  to { transform: translateY(-5px); }
+}
+
+.carregando-sistema__texto {
+  font: 600 0.9375rem/1.25rem var(--fonte);
+  color: var(--rotulo-2);
+}
+
+.carregando-sistema__barra {
+  position: relative;
+  width: 160px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--preenchimento);
+}
+.carregando-sistema__barra::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cor-brilho), var(--cor));
+  animation: carregando-barra 1.2s var(--mola) infinite;
+}
+@keyframes carregando-barra {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+/* ---------- Cabeçalho do sistema ---------- */
+
+.icone-sistema--cabecalho { width: 34px; height: 34px; }
+
+/* Tema claro/escuro dos sistemas: a lua vira sol girando */
+.botao-tema .icone {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition: opacity 300ms ease, transform 500ms var(--salto);
+}
+.botao-tema .icone-sol { opacity: 0; transform: rotate(90deg) scale(0.4); }
+.botao-tema[aria-pressed="true"] .icone-lua { opacity: 0; transform: rotate(-90deg) scale(0.4); }
+.botao-tema[aria-pressed="true"] .icone-sol { opacity: 1; transform: none; }
+
+/* Celular: o título precisa de espaço; o recarregar e o ícone saem */
+@media (max-width: 599px) {
+  #btn-recarregar-sistema,
+  .icone-sistema--cabecalho { display: none; }
+}

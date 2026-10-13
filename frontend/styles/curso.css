@@ -1,0 +1,360 @@
+/* ============================================================
+   CURSO — o banner com a arte e a logo do curso e os sistemas em
+   cartões. Cada cartão tem uma capa com a arte do curso (calma) e o
+   ícone do sistema — ou os personagens dele — e acende sob o mouse:
+   o cartão sobe, a arte fica viva e o ícone se mexe.
+   Também o ícone de sistema em quadradinho, usado no menu, no
+   cabeçalho, no "Continuar" e na tela de carregando.
+   ============================================================ */
+
+/* ---------- Banner ---------- */
+
+.banner {
+  --raio-arte: 28px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 13.5rem;
+  margin-top: var(--e-1);
+  overflow: hidden;
+  border-radius: 28px;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.06), 0 30px 60px -34px color-mix(in srgb, var(--cor) 85%, transparent);
+}
+.banner[data-tom="claro"] {
+  color: var(--rotulo);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--cor) 22%, transparent),
+    0 2px 6px rgb(0 0 0 / 0.05),
+    0 30px 60px -34px color-mix(in srgb, var(--cor) 85%, transparent);
+}
+
+.banner__conteudo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--e-8);
+  width: 100%;
+  padding: 34px 44px;
+}
+.banner__logo {
+  width: 100%;
+  max-height: 8.5rem;
+  object-fit: contain;
+  animation: banner-logo 900ms var(--mola) 120ms backwards;
+}
+.banner[data-arte="neon"] .banner__logo {
+  filter: drop-shadow(0 0 10px var(--cor-brilho)) drop-shadow(0 0 26px color-mix(in srgb, var(--cor) 70%, transparent));
+}
+.banner[data-arte="aurora"] .banner__logo { max-height: 9.5rem; }
+@keyframes banner-logo {
+  from { opacity: 0; transform: scale(0.92); }
+}
+
+.banner__texto {
+  display: grid;
+  justify-items: start;
+  gap: var(--e-3);
+  animation: banner-texto 900ms var(--mola) 220ms backwards;
+}
+@keyframes banner-texto {
+  from { opacity: 0; transform: translateX(16px); }
+}
+.banner__descricao {
+  max-width: 34rem;
+  font: 500 1.0625rem/1.55 var(--fonte);
+  text-wrap: pretty;
+}
+
+@media (max-width: 759px) {
+  .banner { min-height: 0; border-radius: 24px; }
+  .banner__conteudo {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--e-4);
+    padding: 26px 22px 24px;
+    text-align: center;
+  }
+  .banner__logo { width: min(17rem, 80%); max-height: 7rem; }
+  .banner__texto { justify-items: center; }
+  .banner__descricao { font-size: 0.9375rem; }
+}
+
+/* ---------- Grade de sistemas ---------- */
+
+.sistemas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
+  gap: var(--e-4);
+}
+.sistemas > li { display: grid; min-width: 0; }
+
+.cartao-sistema {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--contorno);
+  border-radius: 24px;
+  background: var(--superficie);
+  box-shadow: var(--sombra-cartao);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 500ms var(--suave), box-shadow 500ms var(--suave), border-color 500ms var(--suave);
+  animation: cartao-entra 800ms var(--suave) backwards;
+  animation-delay: calc(var(--i, 0) * 80ms + 120ms);
+}
+@keyframes cartao-entra {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+}
+.cartao-sistema:hover,
+.cartao-sistema:focus-visible {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--cor) 30%, transparent);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.06), 0 26px 50px -24px color-mix(in srgb, var(--cor) 75%, transparent);
+}
+.cartao-sistema:active { transform: translateY(-2px) scale(0.995); }
+.cartao-sistema:focus-visible { outline: 3px solid var(--cor-texto); outline-offset: 3px; }
+
+/* A capa: arte calma do curso + o ícone grande (ou os personagens) */
+.capa {
+  --raio-arte: 17px;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  height: 9.5rem;
+  overflow: hidden;
+  border-radius: 17px;
+}
+.capa__icone {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: #FFFFFF;
+  transition: transform 600ms var(--suave);
+}
+.icone-capa {
+  width: 64px;
+  height: 64px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+.capa__icone[data-arte="neon"] { color: #E3FAFF; }
+.capa__icone[data-arte="neon"] .icone-capa {
+  filter: drop-shadow(0 0 3px var(--cor-brilho)) drop-shadow(0 0 12px var(--cor));
+}
+.capa__icone[data-arte="aurora"] { color: var(--cor-texto); }
+.capa__icone[data-arte="aurora"] .icone-capa { filter: drop-shadow(0 4px 10px rgb(255 255 255 / 0.9)); }
+.capa__icone[data-arte="geometria"] .icone-capa {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--cor) 80%, transparent));
+}
+.cartao-sistema:is(:hover, :focus-visible) .capa__icone { transform: scale(1.05) translateY(-2px); }
+
+/* Os personagens, saindo de baixo da capa. O ícone vai para o canto. */
+.capa__retratos {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.capa__retrato {
+  height: 118%;
+  width: auto;
+  flex: none;
+  filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.25));
+  transition: transform var(--lento) var(--salto);
+}
+.capa__retratos--2 .capa__retrato--1 { margin-right: -1.4rem; }
+.capa__retratos--2 .capa__retrato--2 { margin-left: -1.4rem; }
+/* A Laura é de corpo inteiro: aparece da cintura para cima */
+.capa__retratos--1 { align-items: flex-start; }
+.capa__retratos--1 .capa__retrato { height: 260%; margin-top: 0.6rem; }
+.cartao-sistema:is(:hover, :focus-visible) .capa__retrato--1 { transform: translateY(-6px) rotate(-2deg); }
+.cartao-sistema:is(:hover, :focus-visible) .capa__retrato--2 { transform: translateY(-6px) rotate(2deg); transition-delay: 80ms; }
+
+.capa__icone--canto {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 11px;
+  background: rgb(255 255 255 / 0.14);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.capa__icone--canto .icone-capa { width: 22px; height: 22px; stroke-width: 1.9; }
+.capa__icone--canto[data-arte="aurora"] { background: rgb(255 255 255 / 0.7); }
+.cartao-sistema:is(:hover, :focus-visible) .capa__icone--canto { transform: rotate(-6deg) scale(1.06); }
+
+/* O corpo: nome, descrição, atividades e o resumo do aluno */
+.cartao-sistema__corpo {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  flex: 1;
+  padding: 14px 10px 4px;
+}
+.cartao-sistema__nome {
+  font: var(--t-titulo-cartao);
+  letter-spacing: -0.018em;
+}
+.cartao-sistema__descricao {
+  font: var(--t-chamada);
+  color: var(--rotulo-2);
+  text-wrap: pretty;
+}
+.cartao-sistema__paginas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.cartao-sistema__paginas li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px 0 8px;
+  border-radius: 999px;
+  background: var(--preenchimento);
+  font: var(--t-nota);
+}
+.cartao-sistema__paginas li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor);
+}
+.cartao-sistema__resumo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  font: 600 0.75rem/1rem var(--fonte);
+  color: var(--cor-texto);
+}
+.cartao-sistema__resumo::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor);
+}
+
+.cartao-sistema__abrir {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 6px 8px 4px;
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+.cartao-sistema__abrir .icone {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+  transition: transform 500ms var(--suave);
+}
+.cartao-sistema:is(:hover, :focus-visible) .cartao-sistema__abrir .icone { transform: translateX(4px); }
+
+@media (max-width: 519px) {
+  .sistemas { grid-template-columns: minmax(0, 1fr); gap: var(--e-3); }
+  .capa { height: 8.5rem; }
+}
+
+/* ---------- Os ícones mexendo quando o cartão acende ---------- */
+
+.ic-barra { transform-box: fill-box; transform-origin: 50% 100%; }
+.ic-traco { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.ic-braco { transform-box: view-box; transform-origin: 12px 7.25px; }
+.ic-moeda { transform-box: fill-box; transform-origin: center; }
+.ic-fatia { transform-box: fill-box; transform-origin: 0% 100%; }
+.ic-ponto { transform-box: fill-box; transform-origin: center; }
+
+.acende:is(:hover, :focus-visible) .ic-barra { animation: ic-crescer 900ms var(--suave) backwards; }
+.acende:is(:hover, :focus-visible) .ic-barra--2 { animation-delay: 90ms; }
+.acende:is(:hover, :focus-visible) .ic-barra--3 { animation-delay: 180ms; }
+@keyframes ic-crescer { from { transform: scaleY(0.25); } }
+
+.acende:is(:hover, :focus-visible) .ic-traco { animation: ic-desenhar 1.1s var(--suave) backwards; }
+@keyframes ic-desenhar { from { stroke-dashoffset: 1; } }
+
+.acende:is(:hover, :focus-visible) .ic-ponto { animation: ic-ponto 700ms var(--suave) 600ms backwards; }
+@keyframes ic-ponto { from { transform: scale(0); } }
+
+.acende:is(:hover, :focus-visible) .ic-braco { animation: ic-balancar 1.8s ease-in-out; }
+@keyframes ic-balancar {
+  30% { transform: rotate(-8deg); }
+  70% { transform: rotate(5deg); }
+}
+
+.acende:is(:hover, :focus-visible) .ic-moeda { animation: ic-girar 1.2s var(--suave); }
+@keyframes ic-girar { from { transform: rotateY(-360deg); } }
+
+.acende:is(:hover, :focus-visible) .ic-fatia { animation: ic-fatia 1.2s var(--suave); }
+@keyframes ic-fatia {
+  45% { transform: translate(1.5px, -1.5px); }
+}
+
+.acende:is(:hover, :focus-visible) .ic-tecla { animation: ic-tecla 900ms var(--suave) backwards; }
+.acende:is(:hover, :focus-visible) .ic-tecla:nth-child(3n + 2) { animation-delay: 80ms; }
+.acende:is(:hover, :focus-visible) .ic-tecla:nth-child(3n) { animation-delay: 160ms; }
+.acende:is(:hover, :focus-visible) .ic-tecla:nth-child(n + 4) { animation-delay: 240ms; }
+.acende:is(:hover, :focus-visible) .ic-tecla:nth-child(n + 7) { animation-delay: 360ms; }
+@keyframes ic-tecla {
+  from { opacity: 0.25; }
+}
+
+/* ---------- Ícone de sistema em quadradinho ---------- */
+
+.icone-sistema {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, var(--cor-fundo-2), var(--cor-fundo));
+  color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 2px 8px color-mix(in srgb, var(--cor) 30%, transparent);
+}
+.icone-sistema .icone { width: 62%; height: 62%; stroke-width: 1.9; }
+.icone-sistema[data-arte="neon"] { color: #DDF9FF; }
+.icone-sistema[data-arte="neon"] .icone { filter: drop-shadow(0 0 2px var(--cor-brilho)); }
+.icone-sistema[data-arte="aurora"] { background: linear-gradient(145deg, var(--cor), var(--cor-brilho)); }
+.icone-sistema[data-arte="geometria"] .icone { filter: drop-shadow(0 0 3px var(--cor)); }
+
+.icone-sistema--menu { width: 22px; height: 22px; border-radius: 6px; }
+.icone-sistema--menu .icone { stroke-width: 2.3; }
+.icone-sistema--continuar { width: 46px; height: 46px; border-radius: 13px; }
+
+.marca-generica {
+  display: inline-grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--cor), var(--cor-texto));
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+@media (forced-colors: active) {
+  .cartao-sistema, .banner { border: 1px solid CanvasText; }
+}

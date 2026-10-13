@@ -1,11 +1,11 @@
 /* ============================================================
    ARTE DOS CURSOS — o fundo animado de cada curso, feito a partir
    da logo dele:
-   · neon (Evolution): a moldura de neon da logo acende piscando,
+   · neon (Evolution): a moldura de neon da logo acende devagar,
      sobre um piso quadriculado que corre em direção a quem olha,
-     com faíscas subindo;
+     com algumas faíscas subindo;
    · aurora (Elas): luzes verde-água que passeiam devagar, com os
-     cifrões do "ela$" subindo e brilhos piscando;
+     cifrões do "ela$" subindo;
    · geometria (Master): as três peças do "M" da logo, soltas e
      flutuando — sob o mouse (ou com foco) elas se encaixam e formam
      o M.
@@ -62,7 +62,7 @@
   background-position: center top;
   transform-origin: 50% 0;
   transform: rotateX(72deg);
-  animation: piso-anda 1.6s linear infinite;
+  animation: piso-anda 3.2s linear infinite;
 }
 @keyframes piso-anda {
   from { transform: rotateX(72deg) translateY(0); }
@@ -79,18 +79,18 @@
   background: linear-gradient(90deg, transparent, var(--cor-brilho) 22%, #E9FCFF 50%, var(--cor-brilho) 78%, transparent);
   box-shadow: 0 0 18px 4px color-mix(in srgb, var(--cor-brilho) 50%, transparent);
   opacity: 0.75;
-  transition: opacity var(--medio) ease, box-shadow var(--medio) ease;
+  transition: opacity var(--lento) var(--suave), box-shadow var(--lento) var(--suave);
 }
 
-/* A moldura de neon da logo: aberta no meio de baixo, acende piscando
-   (como letreiro ligando) e, de vez em quando, dá uma falhada. O brilho
-   (drop-shadow) fica num invólucro sem máscara, para seguir o recorte. */
+/* A moldura de neon da logo: aberta no meio de baixo, acende devagar.
+   O brilho (drop-shadow) fica num invólucro sem máscara, para seguir o
+   recorte. */
 .arte--neon .arte__neon {
   position: absolute;
   inset: 12px;
   filter: drop-shadow(0 0 2px var(--cor-brilho)) drop-shadow(0 0 10px var(--cor));
-  animation: neon-liga 1.4s steps(1, end) 0.3s backwards, neon-falha 7s 2.2s infinite;
-  transition: filter var(--medio) ease;
+  animation: neon-acende 1.6s var(--suave) 0.2s backwards;
+  transition: filter var(--lento) var(--suave);
 }
 .arte--neon .arte__moldura {
   position: absolute;
@@ -104,23 +104,11 @@
     linear-gradient(#000 0 0) top / 100% calc(100% - 12px) no-repeat,
     linear-gradient(90deg, #000 32%, transparent 32% 68%, #000 68%) bottom / 100% 12px no-repeat;
 }
-@keyframes neon-liga {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  15% { opacity: 0.12; }
-  24% { opacity: 1; }
-  28% { opacity: 0.3; }
-  36%, 100% { opacity: 1; }
-}
-@keyframes neon-falha {
-  0%, 90%, 100% { opacity: 1; }
-  91% { opacity: 0.5; }
-  92% { opacity: 1; }
-  94% { opacity: 0.7; }
-  95% { opacity: 1; }
+@keyframes neon-acende {
+  from { opacity: 0; }
 }
 
-/* Faíscas subindo do piso (posição, tempo e atraso de cada uma no style) */
+/* Faíscas subindo devagar do piso (posição, tempo e atraso no style) */
 .arte--neon .arte__faisca {
   position: absolute;
   bottom: 14%;
@@ -129,14 +117,14 @@
   height: 3px;
   border-radius: 50%;
   background: #EFFDFF;
-  box-shadow: 0 0 6px 2px var(--cor-brilho);
+  box-shadow: 0 0 6px 1px var(--cor-brilho);
   opacity: 0;
-  animation: faisca-sobe var(--t) var(--d) linear infinite;
+  animation: faisca-sobe var(--t) var(--d) ease-in-out infinite;
 }
 @keyframes faisca-sobe {
   0% { opacity: 0; transform: translate(0, 0) scale(1); }
-  12% { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--dx), -240px) scale(0.4); }
+  30% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(var(--dx), -220px) scale(0.5); }
 }
 
 .acende:is(:hover, :focus-visible) .arte--neon .arte__neon {
@@ -161,7 +149,7 @@
   filter: blur(34px);
   opacity: 0.62;
   will-change: transform;
-  transition: opacity var(--lento) ease;
+  transition: opacity var(--lento) var(--suave);
 }
 .arte--aurora .arte__luz--1 {
   top: -24%;
@@ -199,26 +187,9 @@
 }
 @keyframes cifrao-sobe {
   0% { opacity: 0; transform: translateY(0) rotate(-12deg); }
-  15% { opacity: 0.3; }
-  85% { opacity: 0.2; }
+  25% { opacity: 0.22; }
+  75% { opacity: 0.16; }
   100% { opacity: 0; transform: translateY(-600px) rotate(16deg); }
-}
-
-/* Brilhos de quatro pontas piscando */
-.arte--aurora .arte__estrela {
-  position: absolute;
-  top: var(--y);
-  left: var(--x);
-  width: var(--s);
-  aspect-ratio: 1;
-  background: linear-gradient(135deg, #FFFFFF, var(--cor-brilho));
-  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
-  opacity: 0;
-  animation: estrela-pisca 3.2s var(--d) ease-in-out infinite;
-}
-@keyframes estrela-pisca {
-  0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
-  50% { opacity: 0.95; transform: scale(1) rotate(45deg); }
 }
 
 .acende:is(:hover, :focus-visible) .arte--aurora .arte__luz { opacity: 0.85; }
@@ -227,15 +198,15 @@
 
 .arte--geometria {
   background:
-    radial-gradient(90% 60% at 85% 100%, color-mix(in srgb, var(--cor) 32%, transparent), transparent 70%),
-    linear-gradient(155deg, var(--cor-fundo-2) 0%, var(--cor-fundo) 75%);
+    radial-gradient(80% 55% at 88% 100%, color-mix(in srgb, var(--cor) 16%, transparent), transparent 70%),
+    linear-gradient(160deg, var(--cor-fundo-2) 0%, var(--cor-fundo) 55%);
 }
 /* Linhas finas na diagonal das pernas do M */
 .arte--geometria::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(121deg, color-mix(in srgb, var(--cor) 11%, transparent) 0 1px, transparent 1px 28px);
+  background: repeating-linear-gradient(121deg, color-mix(in srgb, var(--cor) 7%, transparent) 0 1px, transparent 1px 28px);
   -webkit-mask-image: linear-gradient(to bottom, #000, transparent 90%);
   mask-image: linear-gradient(to bottom, #000, transparent 90%);
 }
@@ -249,15 +220,15 @@
   width: auto;
   aspect-ratio: 195 / 190;
   overflow: visible;
-  opacity: 0.24;
-  transition: opacity var(--lento) ease, filter var(--lento) ease;
+  opacity: 0.2;
+  transition: opacity 900ms var(--suave), filter 900ms var(--suave);
 }
 .arte--geometria .arte__flutua {
   transform-box: fill-box;
-  animation: peca-flutua 6s ease-in-out infinite alternate;
+  animation: peca-flutua 9s ease-in-out infinite alternate;
 }
-.arte--geometria .arte__flutua:nth-child(2) { animation-duration: 7.5s; animation-delay: -2s; }
-.arte--geometria .arte__flutua:nth-child(3) { animation-duration: 5s; animation-delay: -1s; }
+.arte--geometria .arte__flutua:nth-child(2) { animation-duration: 11s; animation-delay: -3s; }
+.arte--geometria .arte__flutua:nth-child(3) { animation-duration: 8s; animation-delay: -2s; }
 @keyframes peca-flutua {
   to { transform: translateY(-6%) rotate(3deg); }
 }
@@ -265,7 +236,7 @@
   fill: var(--cor);
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 900ms var(--salto);
+  transition: transform 1100ms var(--suave);
 }
 .arte--geometria .arte__peca--1 { transform: translate(-12%, -26%) rotate(-9deg); }
 .arte--geometria .arte__peca--2 { transform: translate(22%, 12%) rotate(12deg); }
@@ -273,8 +244,8 @@
 
 /* Sob o mouse, as peças se encaixam: o M se forma */
 .acende:is(:hover, :focus-visible) .arte--geometria .arte__m {
-  opacity: 0.5;
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--cor) 60%, transparent));
+  opacity: 0.42;
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--cor) 45%, transparent));
 }
 .acende:is(:hover, :focus-visible) .arte--geometria .arte__peca { transform: none; }
 
@@ -282,34 +253,17 @@
 .arte--geometria .arte__varredura {
   position: absolute;
   inset: -40% -60%;
-  background: linear-gradient(115deg, transparent 44%, rgb(255 255 255 / 0.09) 50%, transparent 56%);
-  animation: varrer 8s ease-in-out infinite;
+  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.05) 50%, transparent 60%);
+  animation: varrer 14s ease-in-out infinite;
 }
 @keyframes varrer {
   0%, 55% { transform: translateX(-45%); }
   100% { transform: translateX(45%); }
 }
 
-/* Pontos acesos, como nós de uma rede */
-.arte--geometria .arte__ponto {
-  position: absolute;
-  top: var(--y);
-  left: var(--x);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--cor-brilho);
-  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--cor) 70%, transparent);
-  animation: ponto-pulsa 2.6s var(--d) ease-in-out infinite;
-}
-@keyframes ponto-pulsa {
-  0%, 100% { opacity: 0.25; transform: scale(0.7); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
 /* Movimento reduzido: a arte fica parada, inteira e acesa */
 @media (prefers-reduced-motion: reduce) {
-  .arte__faisca, .arte__cifrao, .arte__estrela, .arte__varredura { display: none; }
+  .arte__faisca, .arte__cifrao, .arte__varredura { display: none; }
 }
 
 @media (forced-colors: active) {
