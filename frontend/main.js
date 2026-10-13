@@ -1,9 +1,8 @@
 import { state } from './state/store.js';
 import { buscarPerfil } from '../backend/api/perfilRepo.js';
 import {
-  cursoPorId, cursosDoSistema, listarCursos, paginaDoSistema, sistemaPorId,
+  cursoPorId, cursosDoSistema, paginaDoSistema, sistemaPorId,
 } from '../backend/domain/catalogo.js';
-import { escapeHtml } from './shared/dom.js';
 import { conferirSessao, iniciarAutenticacao, sair } from './features/auth/auth.js';
 import {
   anunciar, atualizarConta, esconderApp, iniciarShell, mostrarApp, rolarParaOTopo, trocarTela,
@@ -12,7 +11,7 @@ import {
   corrigirRota, iniciarRotas, irPara, limparRota, rotaAtual, trocarPagina, voltar,
 } from './features/app/rotas.js';
 import { iniciarNavegacao, marcarNavegacao } from './features/app/navegacao.js';
-import { estiloDoCurso, pintarComCurso } from './features/cursos/aparencia.js';
+import { pintarComCurso } from './features/cursos/aparencia.js';
 import {
   atualizarCumprimento, atualizarUltimo, focarPortal, iniciarInicio,
 } from './features/inicio/inicioView.js';
@@ -36,7 +35,6 @@ window.FinancialExperts = {
 
 const app = document.getElementById('app');
 
-desenharCursosDoAcesso();
 iniciarAvisoDeCookies();
 
 const abrirSistema = (cursoId, sistemaId, paginaId) => irPara({ tela: 'sistema', cursoId, sistemaId, paginaId });
@@ -182,12 +180,6 @@ function conferirRota(pedida) {
     corrigirRota({ tela: 'sistema', cursoId: curso.id, sistemaId: sistema.id, paginaId: pagina?.id });
   }
   return { tela: 'sistema', curso, sistema, pagina };
-}
-
-// Os cursos que o login abre, embaixo do cartão de acesso.
-function desenharCursosDoAcesso() {
-  document.getElementById('auth-cursos').innerHTML = listarCursos().map((curso, i) => `
-    <li class="auth-curso" style="${estiloDoCurso(curso)}">${escapeHtml(curso.nome)}</li>`).join('');
 }
 
 function limpar(texto) {

@@ -24,11 +24,7 @@ export function iniciarInicio({ aoAbrirCurso, aoAbrirSistema }) {
     aoAbrirCurso(portal.dataset.curso);
   });
 
-  // A inclinação e a luz seguem o mouse (no toque, não: o dedo rola a página).
-  for (const portal of portais.querySelectorAll('.portal')) {
-    portal.addEventListener('pointermove', inclinar);
-    portal.addEventListener('pointerleave', endireitar);
-  }
+  for (const portal of portais.querySelectorAll('.portal')) ligarMovimento(portal);
 
   // Setas do teclado andam entre os portais, como numa fileira de abas.
   portais.addEventListener('keydown', evento => {
@@ -70,29 +66,27 @@ export function atualizarUltimo(ultimo) {
   continuar.innerHTML = ultimo ? continuarHtml(ultimo) : '';
 }
 
-function portalDoCurso(cursoId) {
-  return portais.querySelector(`.portal[data-curso="${CSS.escape(cursoId)}"]`);
-}
-
 export function focarPortal(cursoId) {
-  portalDoCurso(cursoId)?.focus({ preventScroll: true });
+  portais.querySelector(`.portal[data-curso="${CSS.escape(cursoId)}"]`)?.focus({ preventScroll: true });
 }
 
 // ---------- Desenho ----------
 
-function portalHtml(curso, i) {
+function portalHtml(curso) {
   const sistemas = sistemasDoCurso(curso);
   const logo = new URL(curso.logo, document.baseURI).href;
   const chips = sistemas.map(sistema => `<li>${iconeSvg(sistema.icone)}${escapeHtml(sistema.nome)}</li>`).join('');
   return `
-    <li>
+    <li style="${estiloDoCurso(curso)}">
       <a class="portal acende" href="${endereco({ tela: 'curso', cursoId: curso.id })}" data-curso="${escapeHtml(curso.id)}"
-         data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}" style="${estiloDoCurso(curso)}">
+         data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}">
         ${arteHtml(curso)}
+        <span class="portal__luz" aria-hidden="true"></span>
+        <span class="portal__veu" aria-hidden="true"></span>
         <div class="portal__conteudo">
           <div class="portal__topo">
             <span class="portal__nome">${escapeHtml(curso.nome)}</span>
-            <span class="selo selo--pulsa" data-ultimo hidden>Último acesso</span>
+            <span class="selo selo--ponto" data-ultimo hidden>Último acesso</span>
           </div>
           <div class="portal__centro">
             <span class="portal__logo-caixa">
@@ -102,10 +96,8 @@ function portalHtml(curso, i) {
           </div>
           <div class="portal__base">
             <div class="portal__detalhes">
-              <div>
-                <p class="portal__descricao">${escapeHtml(curso.descricao)}</p>
-                <ul class="portal__sistemas" aria-label="${escapeHtml(plural(sistemas.length, 'sistema'))}">${chips}</ul>
-              </div>
+              <p class="portal__descricao">${escapeHtml(curso.descricao)}</p>
+              <ul class="portal__sistemas" aria-label="${escapeHtml(plural(sistemas.length, 'sistema'))}">${chips}</ul>
             </div>
             <span class="portal__cta">
               Entrar no curso
@@ -132,22 +124,98 @@ function continuarHtml({ curso, sistema, pagina }) {
     </a>`;
 }
 
-// ---------- Inclinação ----------
+// ---------- Movimento do portal ----------
+// A inclinação, a subida e a luz que segue o ponteiro são calculadas quadro
+// a quadro (requestAnimationFrame), sempre perseguindo o alvo com uma
+// suavização que não depende da taxa de quadros da tela: o portal desliza
+// atrás do mouse em vez de pular. Só transform e opacity mudam — a placa de
+// vídeo compõe sem redesenhar nada. O tamanho do portal é lido do item da
+// lista (que não se inclina), então ler a posição não força cálculo de layout.
 
-function inclinar(evento) {
-  if (evento.pointerType !== 'mouse' || movimentoReduzido()) return;
-  const portal = evento.currentTarget;
-  const r = portal.getBoundingClientRect();
-  const x = (evento.clientX - r.left) / r.width;
-  const y = (evento.clientY - r.top) / r.height;
-  portal.style.setProperty('--px', `${(x * 100).toFixed(1)}%`);
-  portal.style.setProperty('--py', `${(y * 100).toFixed(1)}%`);
-  portal.style.setProperty('--ry', `${((x - 0.5) * 7).toFixed(2)}deg`);
-  portal.style.setProperty('--rx', `${((0.5 - y) * 5).toFixed(2)}deg`);
-}
+const INCLINACAO_X = 5;     // graus, de cima a baixo
+const INCLINACAO_Y = 7;     // graus, de um lado ao outro
+const SUBIDA = -6;          // px, sob o mouse ou com foco
+const ESCALA = 1.012;
+const MEIA_VIDA = 70;       // ms para andar metade do caminho até o alvo
 
-function endireitar(evento) {
-  const portal = evento.currentTarget;
-  portal.style.removeProperty('--rx');
-  portal.style.removeProperty('--ry');
+function ligarMovimento(portal) {
+  const item = portal.parentElement;
+  const luz = portal.querySelector('.portal__luz');
+  const atual = { rx: 0, ry: 0, sobe: 0, escala: 1, x: 0, y: 0, luz: 0 };
+  const alvo = { ...atual };
+  let quadro = 0;
+  let ultimoTempo = 0;
+
+  function passo(agora) {
+    const dt = ultimoTempo ? Math.min(agora - ultimoTempo, 64) : 16.7;
+    ultimoTempo = agora;
+    const fator = 1 - Math.pow(0.5, dt / MEIA_VIDA);
+    let mexendo = false;
+    for (const chave in alvo) {
+      const falta = alvo[chave] - atual[chave];
+      if (Math.abs(falta) > 0.002) {
+        atual[chave] += falta * fator;
+        mexendo = true;
+      } else {
+        atual[chave] = alvo[chave];
+      }
+    }
+    portal.style.transform =
+      `perspective(1200px) rotateX(${atual.rx.toFixed(3)}deg) rotateY(${atual.ry.toFixed(3)}deg) ` +
+      `translate3d(0, ${atual.sobe.toFixed(2)}px, 0) scale(${atual.escala.toFixed(4)})`;
+    luz.style.transform = `translate3d(${atual.x.toFixed(1)}px, ${atual.y.toFixed(1)}px, 0)`;
+    luz.style.opacity = atual.luz.toFixed(3);
+    quadro = mexendo ? requestAnimationFrame(passo) : 0;
+    if (!quadro) ultimoTempo = 0;
+  }
+
+  function mover() {
+    if (!quadro) quadro = requestAnimationFrame(passo);
+  }
+
+  function acender() {
+    alvo.sobe = SUBIDA;
+    alvo.escala = ESCALA;
+    mover();
+  }
+
+  function apagar() {
+    Object.assign(alvo, { rx: 0, ry: 0, sobe: 0, escala: 1, luz: 0 });
+    mover();
+  }
+
+  portal.addEventListener('pointerenter', evento => {
+    if (evento.pointerType !== 'mouse' || movimentoReduzido()) return;
+    const r = item.getBoundingClientRect();
+    // a luz começa onde o mouse entrou, sem atravessar o portal
+    atual.x = alvo.x = evento.clientX - r.left;
+    atual.y = alvo.y = evento.clientY - r.top;
+    alvo.luz = 1;
+    acender();
+  });
+
+  portal.addEventListener('pointermove', evento => {
+    if (evento.pointerType !== 'mouse' || movimentoReduzido()) return;
+    const r = item.getBoundingClientRect();
+    const x = evento.clientX - r.left;
+    const y = evento.clientY - r.top;
+    alvo.x = x;
+    alvo.y = y;
+    alvo.ry = (x / r.width - 0.5) * INCLINACAO_Y;
+    alvo.rx = (0.5 - y / r.height) * INCLINACAO_X;
+    mover();
+  });
+
+  portal.addEventListener('pointerleave', evento => {
+    if (evento.pointerType !== 'mouse') return;
+    apagar();
+  });
+
+  // Teclado: o portal com foco sobe, como sob o mouse (sem inclinar).
+  portal.addEventListener('focus', () => {
+    if (!movimentoReduzido() && portal.matches(':focus-visible')) acender();
+  });
+  portal.addEventListener('blur', () => {
+    if (!portal.matches(':hover')) apagar();
+  });
 }

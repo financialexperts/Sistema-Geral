@@ -1,19 +1,24 @@
 /* ============================================================
    ARTE DOS CURSOS — o fundo animado de cada curso, feito a partir
    da logo dele:
-   · neon (Evolution): a moldura de neon da logo, acesa, sobre um piso quadriculado que corre em direção a quem olha,
-     com algumas faíscas subindo;
+   · neon (Evolution): a moldura de neon da logo, acesa, sobre um
+     piso quadriculado que corre em direção a quem olha, com algumas
+     faíscas subindo;
    · aurora (Elas): luzes verde-água que passeiam devagar, limpas;
    · geometria (Master): as três peças do "M" da logo, soltas e
      flutuando — sob o mouse (ou com foco) elas se encaixam e formam
      o M.
-   Aparece nos portais do início, no banner do curso e, mais calma,
-   nas capas dos sistemas. As cores vêm do curso (--cor, --cor-brilho,
-   --cor-texto, --cor-fundo, --cor-fundo-2) e a marcação, de
-   frontend/features/cursos/aparencia.js.
+   Aparece nos portais do início, no banner do curso e, parada até o
+   mouse passar, nas capas dos sistemas. As cores vêm do curso (--cor,
+   --cor-brilho, --cor-texto, --cor-fundo, --cor-fundo-2) e a marcação,
+   de frontend/features/cursos/aparencia.js.
 
    Quem "acende" a arte (portal, banner, cartão) leva a classe
    .acende: sob o mouse ou com foco, a arte fica mais viva.
+
+   Fluidez: tudo o que anima aqui é transform ou opacity de elementos
+   HTML (a placa de vídeo compõe, sem redesenhar). Brilho mais forte é
+   uma segunda camada pronta que só acende; nada anima filtro ou sombra.
    ============================================================ */
 
 .arte {
@@ -35,7 +40,7 @@
 }
 
 /* O piso: um plano quadriculado deitado em perspectiva, que anda em
-   direção a quem olha (só transform: a placa de vídeo anima). */
+   direção a quem olha. */
 .arte--neon .arte__piso {
   position: absolute;
   left: -40%;
@@ -60,6 +65,7 @@
   background-position: center top;
   transform-origin: 50% 0;
   transform: rotateX(72deg);
+  will-change: transform;
   animation: piso-anda 3.2s linear infinite;
 }
 @keyframes piso-anda {
@@ -75,18 +81,24 @@
   bottom: 40%;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--cor-brilho) 22%, #E9FCFF 50%, var(--cor-brilho) 78%, transparent);
-  box-shadow: 0 0 18px 4px color-mix(in srgb, var(--cor-brilho) 50%, transparent);
-  opacity: 0.75;
-  transition: opacity var(--lento) var(--suave), box-shadow var(--lento) var(--suave);
+  box-shadow: 0 0 22px 6px color-mix(in srgb, var(--cor-brilho) 55%, transparent);
+  opacity: 0.7;
+  transition: opacity 600ms var(--suave);
 }
 
-/* A moldura de neon da logo, aberta no meio de baixo. O brilho (drop-shadow) fica num invólucro sem máscara, para seguir o
-   recorte. */
+/* A moldura de neon da logo, aberta no meio de baixo. O brilho
+   (drop-shadow) fica num invólucro sem máscara, para seguir o recorte. A
+   segunda moldura, de brilho mais forte, fica pronta por cima e só acende
+   sob o mouse. */
 .arte--neon .arte__neon {
   position: absolute;
   inset: 12px;
   filter: drop-shadow(0 0 2px var(--cor-brilho)) drop-shadow(0 0 10px var(--cor));
-  transition: filter var(--lento) var(--suave);
+}
+.arte--neon .arte__neon--forte {
+  filter: drop-shadow(0 0 4px var(--cor-brilho)) drop-shadow(0 0 22px var(--cor)) drop-shadow(0 0 40px var(--cor));
+  opacity: 0;
+  transition: opacity 600ms var(--suave);
 }
 .arte--neon .arte__moldura {
   position: absolute;
@@ -101,7 +113,6 @@
     linear-gradient(90deg, #000 32%, transparent 32% 68%, #000 68%) bottom / 100% 12px no-repeat;
 }
 
-
 /* Faíscas subindo devagar do piso (posição, tempo e atraso no style) */
 .arte--neon .arte__faisca {
   position: absolute;
@@ -113,21 +124,17 @@
   background: #EFFDFF;
   box-shadow: 0 0 6px 1px var(--cor-brilho);
   opacity: 0;
+  will-change: transform, opacity;
   animation: faisca-sobe var(--t) var(--d) ease-in-out infinite;
 }
 @keyframes faisca-sobe {
-  0% { opacity: 0; transform: translate(0, 0) scale(1); }
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(1); }
   30% { opacity: 0.7; }
-  100% { opacity: 0; transform: translate(var(--dx), -220px) scale(0.5); }
+  100% { opacity: 0; transform: translate3d(var(--dx), -220px, 0) scale(0.5); }
 }
 
-.acende:is(:hover, :focus-visible) .arte--neon .arte__neon {
-  filter: drop-shadow(0 0 3px var(--cor-brilho)) drop-shadow(0 0 18px var(--cor)) drop-shadow(0 0 34px var(--cor));
-}
-.acende:is(:hover, :focus-visible) .arte--neon .arte__horizonte {
-  opacity: 1;
-  box-shadow: 0 0 28px 8px color-mix(in srgb, var(--cor-brilho) 60%, transparent);
-}
+.acende:is(:hover, :focus-visible) .arte--neon .arte__neon--forte { opacity: 1; }
+.acende:is(:hover, :focus-visible) .arte--neon .arte__horizonte { opacity: 1; }
 
 /* ============ AURORA ============ */
 
@@ -143,7 +150,7 @@
   filter: blur(34px);
   opacity: 0.62;
   will-change: transform;
-  transition: opacity var(--lento) var(--suave);
+  transition: opacity 700ms var(--suave);
 }
 .arte--aurora .arte__luz--1 {
   top: -24%;
@@ -165,9 +172,9 @@
   opacity: 0.5;
   animation: aurora-3 11s ease-in-out infinite alternate;
 }
-@keyframes aurora-1 { to { transform: translate(24%, 20%) scale(1.2); } }
-@keyframes aurora-2 { to { transform: translate(-20%, -18%) scale(0.9); } }
-@keyframes aurora-3 { to { transform: translate(-26%, 16%) scale(1.25); } }
+@keyframes aurora-1 { to { transform: translate3d(24%, 20%, 0) scale(1.2); } }
+@keyframes aurora-2 { to { transform: translate3d(-20%, -18%, 0) scale(0.9); } }
+@keyframes aurora-3 { to { transform: translate3d(-26%, 16%, 0) scale(1.25); } }
 
 .acende:is(:hover, :focus-visible) .arte--aurora .arte__luz { opacity: 0.85; }
 
@@ -188,42 +195,45 @@
   mask-image: linear-gradient(to bottom, #000, transparent 90%);
 }
 
-/* O M da logo em peças soltas, grande no canto */
+/* O M da logo em peças soltas, grande no canto. Cada peça é uma camada
+   própria (um <svg> do tamanho do M inteiro), que flutua e, sob o mouse,
+   volta para o lugar dela: as três juntas formam o M. */
 .arte--geometria .arte__m {
   position: absolute;
   right: -10%;
   bottom: -14%;
   height: 92%;
-  width: auto;
   aspect-ratio: 195 / 190;
-  overflow: visible;
   opacity: 0.2;
-  transition: opacity 900ms var(--suave), filter 900ms var(--suave);
+  transition: opacity 900ms var(--suave);
 }
 .arte--geometria .arte__flutua {
-  transform-box: fill-box;
+  position: absolute;
+  inset: 0;
+  will-change: transform;
   animation: peca-flutua 9s ease-in-out infinite alternate;
 }
 .arte--geometria .arte__flutua:nth-child(2) { animation-duration: 11s; animation-delay: -3s; }
 .arte--geometria .arte__flutua:nth-child(3) { animation-duration: 8s; animation-delay: -2s; }
 @keyframes peca-flutua {
-  to { transform: translateY(-6%) rotate(3deg); }
+  to { transform: translate3d(0, -3%, 0) rotate(2deg); }
 }
 .arte--geometria .arte__peca {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   fill: var(--cor);
-  transform-box: fill-box;
-  transform-origin: center;
+  will-change: transform;
   transition: transform 1100ms var(--suave);
 }
-.arte--geometria .arte__peca--1 { transform: translate(-12%, -26%) rotate(-9deg); }
-.arte--geometria .arte__peca--2 { transform: translate(22%, 12%) rotate(12deg); }
-.arte--geometria .arte__peca--3 { transform: translate(-60%, 30%) rotate(-16deg); }
+/* Soltas (cada uma gira em volta do próprio centro, em % do M inteiro) */
+.arte--geometria .arte__peca--1 { transform-origin: 50% 50%; transform: translate3d(-12%, -26%, 0) rotate(-9deg); }
+.arte--geometria .arte__peca--2 { transform-origin: 36% 58%; transform: translate3d(16%, 6%, 0) rotate(12deg); }
+.arte--geometria .arte__peca--3 { transform-origin: 9% 83%; transform: translate3d(-11%, 10%, 0) rotate(-16deg); }
 
 /* Sob o mouse, as peças se encaixam: o M se forma */
-.acende:is(:hover, :focus-visible) .arte--geometria .arte__m {
-  opacity: 0.42;
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--cor) 45%, transparent));
-}
+.acende:is(:hover, :focus-visible) .arte--geometria .arte__m { opacity: 0.42; }
 .acende:is(:hover, :focus-visible) .arte--geometria .arte__peca { transform: none; }
 
 /* Uma faixa de luz que cruza de tempos em tempos */
@@ -231,12 +241,21 @@
   position: absolute;
   inset: -40% -60%;
   background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.05) 50%, transparent 60%);
+  will-change: transform;
   animation: varrer 14s ease-in-out infinite;
 }
 @keyframes varrer {
-  0%, 55% { transform: translateX(-45%); }
-  100% { transform: translateX(45%); }
+  0%, 55% { transform: translate3d(-45%, 0, 0); }
+  100% { transform: translate3d(45%, 0, 0); }
 }
+
+/* ============ Capas dos cartões ============
+   Várias capas na mesma tela: elas ficam paradas e só a do cartão sob o
+   mouse (ou com foco) se mexe. */
+.capa .arte,
+.capa .arte * { animation-play-state: paused; }
+.acende:is(:hover, :focus-visible) .capa .arte,
+.acende:is(:hover, :focus-visible) .capa .arte * { animation-play-state: running; }
 
 /* Movimento reduzido: a arte fica parada, inteira e acesa */
 @media (prefers-reduced-motion: reduce) {

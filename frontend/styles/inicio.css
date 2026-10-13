@@ -1,9 +1,14 @@
 /* ============================================================
    INÍCIO — a escolha do curso. Um portal por curso, lado a lado:
    a arte animada dele (arte.css), a logo e os sistemas. O portal
-   sob o mouse (ou com foco) cresce, se inclina na direção do
-   ponteiro, acende a arte e mostra o que tem dentro; os outros
-   recuam. No celular, um embaixo do outro, com tudo à vista.
+   sob o mouse sobe, se inclina na direção do ponteiro (inicioView.js)
+   e mostra o que tem dentro; os outros esmaecem. No celular, um
+   embaixo do outro, com tudo à vista.
+
+   Fluidez: tudo o que se mexe aqui é transform ou opacity, que a
+   placa de vídeo anima sozinha — nada muda de tamanho, de filtro ou
+   de sombra durante a animação (sombra e brilho mais fortes são
+   camadas prontas que só acendem).
    ============================================================ */
 
 .inicio__cabeca {
@@ -12,35 +17,46 @@
   margin: var(--e-1) 0 var(--e-5);
 }
 
-/* "Escolha o seu curso" nas cores dos cursos, que deslizam devagar.
-   Os tons escuros de cada um (os de texto), para o título ter contraste. */
+/* "Escolha o seu curso" nas cores dos cursos (os tons escuros de cada um,
+   os de texto, para o título ter contraste). */
 .inicio__titulo {
   width: fit-content;
   font: 800 clamp(1.75rem, 1.15rem + 1.9vw, 2.5rem)/1.12 var(--fonte-titulo);
   letter-spacing: -0.025em;
-  background: linear-gradient(90deg, #0A6CF0, #0B7F88, #0077C2, #0A6CF0);
-  background-size: 300% 100%;
+  background: linear-gradient(90deg, #0A6CF0, #0B7F88 55%, #0077C2);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: titulo-cores 24s linear infinite;
 }
-@keyframes titulo-cores { to { background-position: 300% 0; } }
 .inicio__descricao { color: var(--rotulo-2); text-wrap: pretty; }
 
 /* ---------- Os portais ---------- */
 
+/* Uma coluna por curso (cabem mais cursos no futuro: quebram de linha). */
 .portais {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-auto-rows: clamp(25rem, calc(100dvh - 16.5rem), 36rem);
   gap: var(--e-4);
-  height: clamp(25rem, calc(100dvh - 16.5rem), 36rem);
 }
 .portais > li {
+  position: relative;
   display: flex;
-  flex: 1 1 0;
   min-width: 0;
-  transition: flex-grow 700ms var(--suave);
 }
+
+/* A sombra colorida de quando o portal acende: pronta, só aparece */
+.portais > li::before {
+  content: "";
+  position: absolute;
+  inset: 8% 6% -1%;
+  z-index: -1;
+  border-radius: var(--raio-portal);
+  box-shadow: 0 30px 70px -14px color-mix(in srgb, var(--cor) 90%, transparent);
+  opacity: 0;
+  transition: opacity 500ms var(--suave);
+}
+.portais > li:is(:hover, :focus-within)::before { opacity: 1; }
 
 .portal {
   --raio-arte: var(--raio-portal);
@@ -55,9 +71,10 @@
   text-decoration: none;
   box-shadow:
     0 2px 6px rgb(0 0 0 / 0.08),
-    0 28px 60px -28px color-mix(in srgb, var(--cor) 70%, transparent);
-  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--sobe, 0px));
-  transition: transform 600ms var(--suave), box-shadow 600ms var(--suave), filter 600ms var(--suave);
+    0 24px 48px -30px color-mix(in srgb, var(--cor) 70%, transparent);
+  /* a inclinação e a subida vêm do inicioView.js, quadro a quadro */
+  transform: perspective(1200px);
+  will-change: transform;
   -webkit-tap-highlight-color: transparent;
 }
 .portal[data-tom="claro"] {
@@ -65,40 +82,41 @@
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--cor) 22%, transparent),
     0 2px 6px rgb(0 0 0 / 0.06),
-    0 28px 60px -28px color-mix(in srgb, var(--cor) 70%, transparent);
+    0 24px 48px -30px color-mix(in srgb, var(--cor) 70%, transparent);
 }
-
-/* Luz que segue o ponteiro (--px e --py, do JS) */
-.portal::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  background: radial-gradient(28rem circle at var(--px, 50%) var(--py, 30%), rgb(255 255 255 / 0.16), transparent 45%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 600ms var(--suave);
-}
-
-.portal:hover,
-.portal:focus-visible {
-  --sobe: -6px;
-  box-shadow:
-    0 4px 12px rgb(0 0 0 / 0.10),
-    0 40px 80px -30px color-mix(in srgb, var(--cor) 90%, transparent);
-}
-.portal:hover::after { opacity: 1; }
-.portal:active { --sobe: -3px; }
 .portal:focus-visible { outline: 3px solid var(--cor-texto); outline-offset: 4px; }
 
-/* Janela larga com mouse: o portal escolhido cresce e os outros recuam */
-@media (hover: hover) and (min-width: 760px) {
-  .portais > li:hover,
-  .portais > li:focus-within { flex-grow: 1.6; }
-  .portais:has(> li:hover) > li:not(:hover) .portal {
-    filter: saturate(0.7) brightness(0.94);
-  }
+/* A luz que segue o ponteiro: um círculo de tamanho fixo que só se move */
+.portal__luz {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 34rem;
+  height: 34rem;
+  margin: -17rem 0 0 -17rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.15), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.portal[data-tom="claro"] .portal__luz {
+  background: radial-gradient(circle, rgb(255 255 255 / 0.55), transparent 62%);
+}
+
+/* O véu que esmaece os outros portais enquanto um está sob o mouse */
+.portal__veu {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #000000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 450ms var(--suave);
+}
+@media (hover: hover) {
+  .portais:has(> li:hover) > li:not(:hover) .portal__veu { opacity: 0.18; }
 }
 
 .portal__conteudo {
@@ -126,7 +144,8 @@
   opacity: 0.85;
 }
 
-/* Etiqueta de vidro ("Último acesso", "3 sistemas") */
+/* Etiqueta ("Último acesso", "3 sistemas"). Sem desfoque de fundo: atrás
+   dela a arte se mexe, e o desfoque teria de ser refeito a cada quadro. */
 .selo {
   display: inline-flex;
   align-items: center;
@@ -136,17 +155,15 @@
   border: 1px solid rgb(255 255 255 / 0.22);
   border-radius: 999px;
   background: rgb(255 255 255 / 0.14);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
   font: 600 0.6875rem/1 var(--fonte);
   white-space: nowrap;
 }
 [data-tom="claro"] .selo {
   border-color: color-mix(in srgb, var(--cor) 25%, transparent);
-  background: rgb(255 255 255 / 0.7);
+  background: rgb(255 255 255 / 0.78);
   color: var(--cor-texto);
 }
-.selo--pulsa::before {
+.selo--ponto::before {
   content: "";
   width: 6px;
   height: 6px;
@@ -155,8 +172,7 @@
 }
 
 /* A logo ocupa o meio: o tamanho acompanha a largura e a altura que
-   sobram (unidades cqw/cqh do contêiner), para caber mesmo quando os
-   detalhes abrem embaixo. */
+   sobram (unidades cqw/cqh do contêiner). */
 .portal__centro {
   container-type: size;
   display: grid;
@@ -166,7 +182,8 @@
 .portal__logo-caixa {
   position: relative;
   display: block;
-  transition: transform 700ms var(--suave);
+  transition: transform 600ms var(--suave);
+  will-change: transform;
 }
 .portal:is(:hover, :focus-visible) .portal__logo-caixa { transform: scale(1.04); }
 .portal__logo {
@@ -175,43 +192,43 @@
   height: auto;
   max-height: 94cqh;
   object-fit: contain;
-  transition: filter 600ms var(--suave);
 }
 .portal[data-arte="aurora"] .portal__logo { width: min(17rem, 74cqw); }
-
-/* Evolution: a logo de neon acende devagar e brilha mais sob o mouse */
+/* Evolution: o halo azul da logo de neon, parado (sem transição de filtro) */
 .portal[data-arte="neon"] .portal__logo {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--cor) 55%, transparent));
-}
-.portal[data-arte="neon"]:is(:hover, :focus-visible) .portal__logo {
-  filter: drop-shadow(0 0 10px var(--cor-brilho)) drop-shadow(0 0 24px var(--cor));
+  filter: drop-shadow(0 0 14px rgb(31 139 255 / 0.5));
 }
 
-/* Elas e Master: um brilho atravessa as letras (a própria logo é a
-   máscara, então só elas brilham) */
+/* Elas e Master: um brilho atravessa as letras sob o mouse. A própria logo
+   é a máscara; dentro dela, uma faixa de luz só desliza (transform). */
 .portal__brilho {
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%);
-  background-size: 260% 100%;
-  background-position: 130% 0;
+  overflow: hidden;
   -webkit-mask: var(--logo) center / contain no-repeat;
   mask: var(--logo) center / contain no-repeat;
-  opacity: 0;
   pointer-events: none;
 }
+.portal__brilho::before {
+  content: "";
+  position: absolute;
+  inset: 0 -60%;
+  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.7) 50%, transparent 58%);
+  opacity: 0;
+  transform: translateX(-50%);
+}
 .portal[data-arte="neon"] .portal__brilho { display: none; }
-.portal:is(:hover, :focus-visible) .portal__brilho {
-  animation: brilho-letras 2.4s var(--suave);
+.portal:is(:hover, :focus-visible) .portal__brilho::before {
+  animation: brilho-letras 1.8s var(--suave);
 }
 @keyframes brilho-letras {
-  0% { opacity: 1; background-position: 130% 0; }
-  100% { opacity: 1; background-position: -30% 0; }
+  from { opacity: 1; transform: translateX(-50%); }
+  to { opacity: 1; transform: translateX(50%); }
 }
 
 .portal__base { display: grid; gap: var(--e-4); }
 
-.portal__detalhes > div { display: grid; gap: var(--e-3); }
+.portal__detalhes { display: grid; gap: var(--e-3); }
 .portal__descricao {
   font: var(--t-chamada);
   opacity: 0.88;
@@ -241,40 +258,49 @@
   color: color-mix(in srgb, var(--cor-texto) 75%, var(--rotulo));
 }
 
-/* Detalhes que aparecem sob o mouse (só onde existe mouse e espaço) */
+/* Os detalhes já ocupam o lugar deles (nada muda de tamanho): sob o
+   mouse, só aparecem subindo um pouco. */
 @media (hover: hover) and (min-width: 760px) {
   .portal__detalhes {
-    display: grid;
-    grid-template-rows: 0fr;
     opacity: 0;
-    transition: grid-template-rows 650ms var(--suave), opacity 500ms var(--suave);
+    transform: translateY(10px);
+    transition: opacity 450ms var(--suave), transform 450ms var(--suave);
   }
-  .portal__detalhes > div { min-height: 0; overflow: hidden; }
   .portal:is(:hover, :focus-visible) .portal__detalhes {
-    grid-template-rows: 1fr;
     opacity: 1;
+    transform: none;
   }
 }
 
-/* "Entrar no curso": vira um botão branco com a seta na cor do curso */
+/* "Entrar no curso": acende um fundo branco pronto por baixo do texto */
 .portal__cta {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--e-2);
   height: 48px;
   padding: 0 7px 0 20px;
+  overflow: hidden;
   border: 1px solid rgb(255 255 255 / 0.22);
   border-radius: 999px;
   background: rgb(255 255 255 / 0.12);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
   font-weight: 600;
-  transition: background-color 500ms var(--suave), color 500ms var(--suave), border-color 500ms var(--suave);
+  transition: color 400ms var(--suave);
+}
+.portal__cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #FFFFFF;
+  opacity: 0;
+  transition: opacity 400ms var(--suave);
 }
 [data-tom="claro"] .portal__cta {
   border-color: color-mix(in srgb, var(--cor) 25%, transparent);
-  background: rgb(255 255 255 / 0.66);
+  background: rgb(255 255 255 / 0.7);
   color: var(--cor-texto);
 }
 .portal__seta {
@@ -284,26 +310,22 @@
   height: 34px;
   border-radius: 50%;
   background: rgb(255 255 255 / 0.18);
-  transition: transform 500ms var(--suave), background-color 500ms var(--suave), color 500ms var(--suave);
+  transition: transform 450ms var(--suave), background-color 400ms var(--suave), color 400ms var(--suave);
 }
 .portal__seta .icone { width: 18px; height: 18px; stroke-width: 2.2; }
 [data-tom="claro"] .portal__seta { background: var(--cor-texto); color: #FFFFFF; }
-.portal:is(:hover, :focus-visible) .portal__cta {
-  border-color: transparent;
-  background: #FFFFFF;
-  color: var(--cor-texto);
-}
+.portal:is(:hover, :focus-visible) .portal__cta { color: var(--cor-texto); }
+.portal:is(:hover, :focus-visible) .portal__cta::before { opacity: 1; }
 .portal:is(:hover, :focus-visible) .portal__seta {
   transform: translateX(3px);
   background: var(--cor-texto);
   color: #FFFFFF;
 }
 
-/* Celular e janelas estreitas: um portal embaixo do outro, sem inclinar */
+/* Celular e janelas estreitas: um portal embaixo do outro */
 @media (max-width: 759px) {
-  .portais { flex-direction: column; height: auto; }
-  .portais > li { flex: none; }
-  .portal { min-height: 17rem; transform: none; }
+  .portais { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
+  .portal { min-height: 17rem; }
   .portal__conteudo { padding: 20px 20px 18px; }
   .portal__centro { container-type: normal; padding: var(--e-2) 0 var(--e-1); }
   .portal__logo { width: min(17rem, 76vw); max-height: 7.5rem; }
@@ -319,6 +341,8 @@
   color: var(--rotulo-2);
 }
 .continuar__link {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -329,10 +353,21 @@
   background: var(--superficie);
   box-shadow: var(--sombra-cartao);
   text-decoration: none;
-  transition: box-shadow 500ms var(--suave), transform 500ms var(--suave);
+  transition: transform 450ms var(--suave);
 }
-.continuar__link:hover { box-shadow: var(--sombra-cartao-hover); transform: translateY(-2px); }
-.continuar__link:active { transform: scale(0.99); }
+/* sombra mais forte pronta, que só acende */
+.continuar__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--sombra-cartao-hover);
+  opacity: 0;
+  transition: opacity 450ms var(--suave);
+}
+.continuar__link:hover { transform: translateY(-2px); }
+.continuar__link:hover::after { opacity: 1; }
 .continuar__texto { flex: 1; min-width: 0; display: grid; gap: 2px; }
 .continuar__nome {
   font: var(--t-titulo-cartao);
@@ -345,7 +380,7 @@
   height: 18px;
   color: var(--rotulo-3);
   stroke-width: 2.2;
-  transition: transform 500ms var(--suave);
+  transition: transform 450ms var(--suave);
 }
 .continuar__link:hover .continuar__seta { transform: translateX(3px); color: var(--cor-texto); }
 

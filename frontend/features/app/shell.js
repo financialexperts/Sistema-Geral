@@ -89,6 +89,28 @@ export function trocarTela(nome, { voltarRolagem = false } = {}) {
   for (const parte of app.querySelectorAll('[data-tela]')) parte.hidden = parte.dataset.tela !== nome;
   principal.scrollTop = voltarRolagem ? rolagens[nome] ?? 0 : 0;
   atualizarBordaDeRolagem();
+  animarEntrada(nome);
+}
+
+// Toda tela entra igual: o conteúdo aparece subindo um pouco e o título do
+// cabeçalho, só no fade. Pela Web Animations API (só opacity e transform, a
+// placa de vídeo anima): assim a entrada também acontece trocando de um
+// curso para outro, quando a tela continua a mesma.
+const ENTRADA_CONTEUDO = [
+  { opacity: 0, transform: 'translate3d(0, 10px, 0)' },
+  { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+];
+const ENTRADA_TITULO = [{ opacity: 0 }, { opacity: 1 }];
+const CURVA = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+
+function animarEntrada(nome) {
+  if (movimentoReduzido()) return;
+  for (const parte of app.querySelectorAll(`.conteudo[data-tela="${nome}"]`)) {
+    parte.animate(ENTRADA_CONTEUDO, { duration: 380, easing: CURVA });
+  }
+  for (const parte of app.querySelectorAll(`.cabecalho__tela[data-tela="${nome}"]`)) {
+    parte.animate(ENTRADA_TITULO, { duration: 280, easing: CURVA });
+  }
 }
 
 export function telaMostrada() {

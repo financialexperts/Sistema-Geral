@@ -28,10 +28,6 @@ export function movimentoReduzido() {
   return matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export function esperar(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 // Clique simples (sem Ctrl/⌘/Shift/Alt, botão esquerdo): o portal navega
 // por dentro. Os outros abrem o link em outra aba, como qualquer link.
 export function cliqueSimples(evento) {

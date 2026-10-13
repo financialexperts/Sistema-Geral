@@ -147,19 +147,10 @@ button{font:inherit;color:inherit}
 }
 .glass:active{transform:scale(.97)}
 
-/* ---------- Topbar ---------- */
-
-/* As abas do sistema, uma por atividade: a da página aberta fica em
-   destaque, como um botão pressionado. */
-
-/* quem entrou e o botão de sair */
+/* botão pequeno */
 .btn.btn--sm{flex:none;padding:8px 12px;font-size:13px;border-radius:9px}
 
-/* ---------- Login (o mesmo do Fluxo de Caixa) ---------- */
-/* Carregando, o aviso de quando o login não funciona e a tela de entrar /
-   criar conta / esqueci a senha. As abas de entrar e criar conta são
-   .authtabs/.authtab (no Fluxo de Caixa, .tabs/.tab: aqui .tabs são as abas
-   do topo). */
+/* ---------- Carregando e sem conexão ---------- */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:120px 0;color:var(--muted);font-size:14px}
 .spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent-ink);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -824,8 +815,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
    uma passa por trás da outra; a ponta do balão sai dos dois. */
 /* celular estreito: as abas sem o ícone, pra "Seu dinheiro no tempo" caber
    inteiro na metade dele */
-@media (max-width:440px){
-}
 
 @media (max-width:480px){
   .intro__duo{--pw:124px;--po:14px;flex-direction:column;align-items:stretch;gap:14px;padding:0;clip-path:none}

@@ -97,8 +97,6 @@ input{font:inherit}
 .glass:hover{box-shadow:var(--shadow)}
 .glass:active{transform:scale(.97)}
 
-/* ---------- Topbar ---------- */
-
 
 /* ---------- Loading / setup ---------- */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:120px 0;color:var(--muted);font-size:14px}
@@ -170,8 +168,6 @@ input{font:inherit}
 .tab__t{font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;display:block;line-height:1.25}
 .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);transform:translateY(-1px)}
 .tab[aria-selected="true"] .tab__n{color:color-mix(in srgb,var(--accent-contrast) 68%,transparent)}
-
-/* ---------- Auth ---------- */
 
 /* ---------- Onboarding ---------- */
 .hero{padding:40px 0 6px}

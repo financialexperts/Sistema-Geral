@@ -44,7 +44,8 @@ function arteNeon(calma) {
     <div class="arte arte--neon" aria-hidden="true">
       <div class="arte__piso"><div class="arte__grade"></div></div>
       <div class="arte__horizonte"></div>
-      ${calma ? '' : '<div class="arte__neon"><div class="arte__moldura"></div></div>'}
+      ${calma ? '' : `<div class="arte__neon"><div class="arte__moldura"></div></div>
+      <div class="arte__neon arte__neon--forte"><div class="arte__moldura"></div></div>`}
       ${faiscas}
     </div>`;
 }
@@ -67,13 +68,16 @@ const PECAS_DO_M = [
   'M0 127 35 147V190H0Z',
 ];
 
+// Cada peça é um <svg> do tamanho do M inteiro, numa camada própria: a placa
+// de vídeo move as três sem redesenhar nada.
 function arteGeometria() {
-  const pecas = PECAS_DO_M
-    .map((d, i) => `<g class="arte__flutua"><path class="arte__peca arte__peca--${i + 1}" d="${d}"/></g>`)
-    .join('');
+  const pecas = PECAS_DO_M.map((d, i) => `
+        <div class="arte__flutua">
+          <svg class="arte__peca arte__peca--${i + 1}" viewBox="0 0 195 190" focusable="false"><path d="${d}"/></svg>
+        </div>`).join('');
   return `
     <div class="arte arte--geometria" aria-hidden="true">
-      <svg class="arte__m" viewBox="0 0 195 190" focusable="false">${pecas}</svg>
+      <div class="arte__m">${pecas}</div>
       <span class="arte__varredura"></span>
     </div>`;
 }
