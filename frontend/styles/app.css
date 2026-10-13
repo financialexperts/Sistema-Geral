@@ -198,7 +198,7 @@
 
 /* Com um sistema aberto, quem rola é ele (dentro da moldura): a área
    principal vira uma coluna fixa, cabeçalho em cima e o sistema embaixo. */
-.app[data-tela="sistema"] .principal {
+.app[data-tela-atual="sistema"] .principal {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -214,7 +214,7 @@
   gap: var(--e-3);
   padding: var(--e-4) var(--margem) var(--e-5);
 }
-.app[data-tela="sistema"] .cabecalho { flex: none; padding-bottom: var(--e-3); }
+.app[data-tela-atual="sistema"] .cabecalho { flex: none; padding-bottom: var(--e-3); }
 
 /* Efeito de borda de rolagem: só aparece quando há conteúdo passando
    por baixo; desfoca e esmaece em vez de pintar uma faixa sólida. */
