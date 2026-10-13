@@ -121,7 +121,7 @@
 .cartao-sistema:active { transform: translateY(-2px) scale(0.995); }
 .cartao-sistema:focus-visible { outline: 3px solid var(--cor-texto); outline-offset: 3px; }
 
-/* A capa: arte calma do curso + o ícone grande (ou os personagens) */
+/* A capa: arte calma do curso + o ícone grande do sistema */
 .capa {
   --raio-arte: 17px;
   position: relative;
@@ -160,47 +160,6 @@
   filter: drop-shadow(0 0 10px color-mix(in srgb, var(--cor) 80%, transparent));
 }
 .cartao-sistema:is(:hover, :focus-visible) .capa__icone { transform: scale(1.05) translateY(-2px); }
-
-/* Os personagens, saindo de baixo da capa. O ícone vai para o canto. */
-.capa__retratos {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.capa__retrato {
-  height: 118%;
-  width: auto;
-  flex: none;
-  filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.25));
-  transition: transform var(--lento) var(--salto);
-}
-.capa__retratos--2 .capa__retrato--1 { margin-right: -1.4rem; }
-.capa__retratos--2 .capa__retrato--2 { margin-left: -1.4rem; }
-/* A Laura é de corpo inteiro: aparece da cintura para cima */
-.capa__retratos--1 { align-items: flex-start; }
-.capa__retratos--1 .capa__retrato { height: 260%; margin-top: 0.6rem; }
-.cartao-sistema:is(:hover, :focus-visible) .capa__retrato--1 { transform: translateY(-6px) rotate(-2deg); }
-.cartao-sistema:is(:hover, :focus-visible) .capa__retrato--2 { transform: translateY(-6px) rotate(2deg); transition-delay: 80ms; }
-
-.capa__icone--canto {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 2;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgb(255 255 255 / 0.25);
-  border-radius: 11px;
-  background: rgb(255 255 255 / 0.14);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-}
-.capa__icone--canto .icone-capa { width: 22px; height: 22px; stroke-width: 1.9; }
-.capa__icone--canto[data-arte="aurora"] { background: rgb(255 255 255 / 0.7); }
-.cartao-sistema:is(:hover, :focus-visible) .capa__icone--canto { transform: rotate(-6deg) scale(1.06); }
 
 /* O corpo: nome, descrição, atividades e o resumo do aluno */
 .cartao-sistema__corpo {
@@ -343,17 +302,7 @@
 .icone-sistema[data-arte="aurora"] { background: linear-gradient(145deg, var(--cor), var(--cor-brilho)); }
 .icone-sistema[data-arte="geometria"] .icone { filter: drop-shadow(0 0 3px var(--cor)); }
 
-.icone-sistema--menu { width: 22px; height: 22px; border-radius: 6px; }
-.icone-sistema--menu .icone { stroke-width: 2.3; }
 .icone-sistema--continuar { width: 46px; height: 46px; border-radius: 13px; }
-
-.marca-generica {
-  display: inline-grid;
-  place-items: center;
-  background: linear-gradient(145deg, var(--cor), var(--cor-texto));
-  color: #FFFFFF;
-  font-weight: 700;
-}
 
 @media (forced-colors: active) {
   .cartao-sistema, .banner { border: 1px solid CanvasText; }

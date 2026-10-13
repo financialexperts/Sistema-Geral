@@ -78,16 +78,20 @@
 }
 .menu__item[aria-current] > .icone { color: var(--acento); }
 
-/* Curso: a marca dele no lugar do ícone e, aberto, o realce na cor dele */
-.menu__marca {
-  width: 22px;
-  height: 22px;
+/* Curso: um ponto na cor dele no lugar do ícone e, aberto, o realce na
+   mesma cor */
+.menu__ponto {
+  width: 10px;
+  height: 10px;
   flex: none;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.14);
-  transition: transform var(--medio) var(--salto);
+  margin: 0 5px;
+  border-radius: 50%;
+  background: var(--cor);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cor) 20%, transparent);
+  transition: box-shadow 400ms var(--suave);
 }
-.menu__item:hover .menu__marca { transform: scale(1.1) rotate(-4deg); }
+.menu__item:hover .menu__ponto,
+.menu__item[aria-current] .menu__ponto { box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor) 28%, transparent); }
 .menu__item--curso[aria-current] {
   background: color-mix(in srgb, var(--cor) 14%, transparent);
   color: color-mix(in srgb, var(--cor-texto) 70%, var(--rotulo));
@@ -117,6 +121,8 @@
   min-height: 32px;
   font-size: 0.8125rem;
 }
+.menu__item--sistema > .icone { width: 18px; height: 18px; color: var(--rotulo-2); }
+.menu__item--sistema[aria-current] > .icone { color: var(--cor-texto); }
 .menu__item--sistema[aria-current] {
   background: color-mix(in srgb, var(--cor) 16%, transparent);
 }
@@ -303,15 +309,6 @@
 
 @media (max-width: 599px) {
   .titulo-grande { font-size: 1.375rem; line-height: 1.75rem; }
-}
-
-/* Marca do curso e ícone do sistema ao lado do título */
-.cabecalho__marca {
-  width: 34px;
-  height: 34px;
-  flex: none;
-  border-radius: 9px;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--cor) 30%, transparent);
 }
 
 /* Voltar: o chevron padrão, um pouco mais grosso que os outros ícones

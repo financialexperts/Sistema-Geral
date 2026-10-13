@@ -4,8 +4,7 @@
    · neon (Evolution): a moldura de neon da logo acende devagar,
      sobre um piso quadriculado que corre em direção a quem olha,
      com algumas faíscas subindo;
-   · aurora (Elas): luzes verde-água que passeiam devagar, com os
-     cifrões do "ela$" subindo;
+   · aurora (Elas): luzes verde-água que passeiam devagar, limpas;
    · geometria (Master): as três peças do "M" da logo, soltas e
      flutuando — sob o mouse (ou com foco) elas se encaixam e formam
      o M.
@@ -175,23 +174,6 @@
 @keyframes aurora-2 { to { transform: translate(-20%, -18%) scale(0.9); } }
 @keyframes aurora-3 { to { transform: translate(-26%, 16%) scale(1.25); } }
 
-/* Os cifrões do "ela$", subindo devagar e girando um pouco */
-.arte--aurora .arte__cifrao {
-  position: absolute;
-  bottom: -48px;
-  left: var(--x);
-  font: 400 var(--s) / 1 Georgia, "Times New Roman", serif;
-  color: var(--cor-texto);
-  opacity: 0;
-  animation: cifrao-sobe var(--t) var(--d) linear infinite;
-}
-@keyframes cifrao-sobe {
-  0% { opacity: 0; transform: translateY(0) rotate(-12deg); }
-  25% { opacity: 0.22; }
-  75% { opacity: 0.16; }
-  100% { opacity: 0; transform: translateY(-600px) rotate(16deg); }
-}
-
 .acende:is(:hover, :focus-visible) .arte--aurora .arte__luz { opacity: 0.85; }
 
 /* ============ GEOMETRIA ============ */
@@ -263,7 +245,7 @@
 
 /* Movimento reduzido: a arte fica parada, inteira e acesa */
 @media (prefers-reduced-motion: reduce) {
-  .arte__faisca, .arte__cifrao, .arte__varredura { display: none; }
+  .arte__faisca, .arte__varredura { display: none; }
 }
 
 @media (forced-colors: active) {

@@ -22,7 +22,6 @@ export const CURSOS = [
     nomeCompleto: 'Financial Evolution',
     descricao: 'Monte o seu fluxo de caixa, combine as fontes de renda da Laura e faça as contas das escolhas da Vanessa e da Karine.',
     logo: 'frontend/img/cursos/evolution-logo.png',
-    marca: 'frontend/img/cursos/evolution-marca.svg',
     arte: 'neon',
     tom: 'escuro',
     cores: { destaque: '#1F8BFF', brilho: '#39D5FF', texto: '#0A6CF0', fundo: '#030919', fundo2: '#0A1F5C' },
@@ -34,7 +33,6 @@ export const CURSOS = [
     nomeCompleto: 'Finanças para Elas',
     descricao: 'Simule juros compostos, resolva as cinco funções financeiras e monte a sua carteira de investimentos.',
     logo: 'frontend/img/cursos/elas-logo.png',
-    marca: 'frontend/img/cursos/elas-marca.svg',
     arte: 'aurora',
     tom: 'claro',
     cores: { destaque: '#13B6C0', brilho: '#1CC7A3', texto: '#0B7F88', fundo: '#F2FFFC', fundo2: '#CFF4EE' },
@@ -46,10 +44,9 @@ export const CURSOS = [
     nomeCompleto: 'Financial Master',
     descricao: 'Simule juros compostos, resolva as cinco funções financeiras e monte a sua carteira de investimentos.',
     logo: 'frontend/img/cursos/master-logo.png',
-    marca: 'frontend/img/cursos/master-marca.svg',
     arte: 'geometria',
     tom: 'escuro',
-    cores: { destaque: '#00AAFF', brilho: '#7FD4FF', texto: '#0077C2', fundo: '#061329', fundo2: '#0B2D5C' },
+    cores: { destaque: '#00AAFF', brilho: '#7FD4FF', texto: '#0077C2', fundo: '#020409', fundo2: '#0A1830' },
     sistemas: ['calculadora-de-juros', 'calculadora-financeira', 'carteira-de-investimentos'],
   },
 ];
@@ -59,7 +56,6 @@ export const CURSOS = [
 // paginas    em vez de endereco, quando o sistema tem mais de uma atividade:
 //            [{ id, nome, endereco }] — o cabeçalho mostra uma aba para cada
 // icone      desenho do ícone (frontend/features/sistemas/icones.js)
-// retratos   personagens do sistema, no lugar do ícone na capa do cartão
 // temaEscuro o sistema tem tema claro e escuro: o cabeçalho mostra o botão
 // resumo     opcional: uma linha sobre o aluno no sistema, feita a partir da
 //            linha dele em `profiles` (a tabela que todos os sistemas usam)
@@ -82,7 +78,6 @@ export const SISTEMAS = [
     nome: 'Laura',
     descricao: 'Simulador de renda: escolha como a Laura vai gerar renda com R$ 30 mil e 10 horas por dia, e veja o que muda numa crise.',
     icone: 'renda',
-    retratos: ['apps/laura/frontend/img/laura.webp'],
     endereco: 'apps/laura/index.html',
     temaEscuro: true,
   },
@@ -91,7 +86,6 @@ export const SISTEMAS = [
     nome: 'Vanessa e Karine',
     descricao: 'Faça as contas das escolhas das duas ao longo de 40 anos e jogue o Seu dinheiro no tempo.',
     icone: 'balanca',
-    retratos: ['frontend/img/retratos/vanessa.png', 'frontend/img/retratos/karine.png'],
     paginas: [
       { id: 'escolhas', nome: 'Vanessa e Karine', endereco: 'apps/vanessa-e-karine/index.html' },
       { id: 'dinheiro-no-tempo', nome: 'Seu dinheiro no tempo', endereco: 'apps/vanessa-e-karine/dinheiro-no-tempo.html' },

@@ -6,15 +6,13 @@ import { endereco } from '../app/rotas.js';
 
 // A página de um curso: o banner com a arte e a logo dele e os sistemas em
 // cartões. A capa de cada cartão usa a arte do curso (calma) com o ícone do
-// sistema — ou os personagens dele (a Laura, a Vanessa e a Karine) — e o
-// resumo mostra o que o aluno já tem naquele sistema (perfil da carteira,
-// planilha pronta…).
+// sistema, e o resumo mostra o que o aluno já tem naquele sistema (perfil
+// da carteira, planilha pronta…).
 
 const els = {};
 let cursoAberto = null;
 
 export function iniciarCurso({ aoAbrirSistema, aoVoltar }) {
-  els.marca = document.getElementById('curso-marca');
   els.titulo = document.getElementById('titulo-curso');
   els.subtitulo = document.getElementById('subtitulo-curso');
   els.banner = document.getElementById('banner-curso');
@@ -53,8 +51,6 @@ export function mostrarCurso(curso, { perfil }) {
   cursoAberto = curso;
   const sistemas = sistemasDoCurso(curso);
 
-  els.marca.src = curso.marca ?? '';
-  els.marca.hidden = !curso.marca;
   els.titulo.textContent = curso.nome;
   els.subtitulo.textContent = `${curso.nomeCompleto} · ${plural(sistemas.length, 'sistema')}`;
 
@@ -121,7 +117,7 @@ function cartaoHtml(curso, sistema, i, perfil) {
       <a class="cartao-sistema acende" href="${endereco(rota)}" data-sistema="${escapeHtml(sistema.id)}" style="--i:${i}">
         <span class="capa" data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}">
           ${arteHtml(curso, { calma: true })}
-          ${capaHtml(curso, sistema)}
+          <span class="capa__icone" data-arte="${escapeHtml(curso.arte)}">${iconeSvg(sistema.icone, 'icone-capa')}</span>
         </span>
         <span class="cartao-sistema__corpo">
           <span class="cartao-sistema__nome">${escapeHtml(sistema.nome)}</span>
@@ -137,13 +133,3 @@ function cartaoHtml(curso, sistema, i, perfil) {
     </li>`;
 }
 
-// Personagens (retratos) quando o sistema tem; senão, o ícone grande.
-function capaHtml(curso, sistema) {
-  const icone = `<span class="capa__icone" data-arte="${escapeHtml(curso.arte)}">${iconeSvg(sistema.icone, 'icone-capa')}</span>`;
-  if (!sistema.retratos?.length) return icone;
-  const retratos = sistema.retratos
-    .map((src, i) => `<img class="capa__retrato capa__retrato--${i + 1}" src="${escapeHtml(src)}" alt="" decoding="async" loading="lazy">`)
-    .join('');
-  return `<span class="capa__retratos capa__retratos--${sistema.retratos.length}">${retratos}</span>
-    <span class="capa__icone capa__icone--canto" data-arte="${escapeHtml(curso.arte)}">${iconeSvg(sistema.icone, 'icone-capa')}</span>`;
-}

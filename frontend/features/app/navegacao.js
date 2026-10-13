@@ -1,6 +1,6 @@
 import { listarCursos, sistemasDoCurso } from '../../../backend/domain/catalogo.js';
 import { cliqueSimples, escapeHtml } from '../../shared/dom.js';
-import { estiloDoCurso, marcaHtml } from '../cursos/aparencia.js';
+import { estiloDoCurso } from '../cursos/aparencia.js';
 import { iconeSvg } from '../sistemas/icones.js';
 import { endereco } from './rotas.js';
 
@@ -58,7 +58,7 @@ function cursoHtml(curso) {
     <li>
       <a class="menu__item menu__item--sistema" href="${endereco({ tela: 'sistema', cursoId: curso.id, sistemaId: sistema.id })}"
          data-curso="${escapeHtml(curso.id)}" data-sistema="${escapeHtml(sistema.id)}">
-        <span class="icone-sistema icone-sistema--menu" data-arte="${escapeHtml(curso.arte)}">${iconeSvg(sistema.icone)}</span>
+        ${iconeSvg(sistema.icone)}
         <span>${escapeHtml(sistema.nome)}</span>
       </a>
     </li>`).join('');
@@ -66,7 +66,7 @@ function cursoHtml(curso) {
   return `
     <li class="menu__curso" data-curso="${escapeHtml(curso.id)}" style="${estiloDoCurso(curso)}">
       <a class="menu__item menu__item--curso" href="${endereco({ tela: 'curso', cursoId: curso.id })}" data-curso="${escapeHtml(curso.id)}">
-        ${marcaHtml(curso, 'menu__marca')}
+        <span class="menu__ponto" aria-hidden="true"></span>
         <span>${escapeHtml(curso.nome)}</span>
       </a>
       <div class="menu__sistemas">

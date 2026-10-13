@@ -199,24 +199,21 @@
   justify-content: center;
   gap: 8px 18px;
 }
+/* Cada curso: o nome com um ponto na cor dele */
 .auth-curso {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   font: 600 0.8125rem/1 var(--fonte);
   color: var(--cor-texto);
 }
-.auth-curso__marca {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--cor) 35%, transparent);
-  animation: flutuar-marca 3.6s ease-in-out infinite alternate;
-  animation-delay: calc(var(--i, 0) * -1.2s);
-}
-@keyframes flutuar-marca {
-  from { transform: translateY(1.5px) rotate(-2deg); }
-  to { transform: translateY(-2.5px) rotate(2deg); }
+.auth-curso::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cor) 20%, transparent);
 }
 
 @media (forced-colors: active) {

@@ -13,7 +13,7 @@ import {
   corrigirRota, iniciarRotas, irPara, limparRota, rotaAtual, trocarPagina, voltar,
 } from './features/app/rotas.js';
 import { iniciarNavegacao, marcarNavegacao } from './features/app/navegacao.js';
-import { estiloDoCurso, marcaHtml, pintarComCurso } from './features/cursos/aparencia.js';
+import { estiloDoCurso, pintarComCurso } from './features/cursos/aparencia.js';
 import {
   atualizarCumprimento, atualizarUltimo, focarPortal, iniciarInicio, portalDoCurso,
 } from './features/inicio/inicioView.js';
@@ -225,10 +225,7 @@ function conferirRota(pedida) {
 // Os cursos que o login abre, embaixo do cartão de acesso.
 function desenharCursosDoAcesso() {
   document.getElementById('auth-cursos').innerHTML = listarCursos().map((curso, i) => `
-    <li class="auth-curso" style="${estiloDoCurso(curso)};--i:${i}">
-      ${marcaHtml(curso, 'auth-curso__marca')}
-      <span>${escapeHtml(curso.nome)}</span>
-    </li>`).join('');
+    <li class="auth-curso" style="${estiloDoCurso(curso)};--i:${i}">${escapeHtml(curso.nome)}</li>`).join('');
 }
 
 function limpar(texto) {
