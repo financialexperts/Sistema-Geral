@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#F5F5F7">
+  <title>Financial Experts</title>
+  <meta name="description" content="Os sistemas dos cursos da Financial Experts num lugar só: entre uma vez e abra o Fluxo de Caixa, as calculadoras, a carteira e as atividades de cada curso.">
+  <link rel="icon" type="image/png" href="frontend/img/favicon.png">
+  <link rel="apple-touch-icon" href="frontend/img/favicon.png">
+  <!-- SDK do Supabase por CDN: versão fixa e hash de integridade (a mesma da Gestão de Reuniões) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js" integrity="sha384-yiVMs0R/Jyz7OhoXa/DsEMUSBLjEhr/QJta2ONO+zB6I8/GmNg/7AUFrZmAJV7KV" crossorigin="anonymous"></script>
+  <!-- O banco de todos os sistemas (o mesmo arquivo que os sistemas em apps/ carregam) -->
+  <script src="backend/config/supabase.js"></script>
+  <link rel="stylesheet" href="frontend/styles/tokens.css">
+  <link rel="stylesheet" href="frontend/styles/base.css">
+  <link rel="stylesheet" href="frontend/styles/auth.css">
+  <link rel="stylesheet" href="frontend/styles/app.css">
+  <link rel="stylesheet" href="frontend/styles/arte.css">
+  <link rel="stylesheet" href="frontend/styles/inicio.css">
+  <link rel="stylesheet" href="frontend/styles/curso.css">
+  <link rel="stylesheet" href="frontend/styles/sistema.css">
+</head>
+<body>
+
+<!-- Ícones no estilo SF Symbols, traço único de 1,7 px (combina com o texto).
+     Os ícones dos sistemas ficam em frontend/features/sistemas/icones.js -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-casa" viewBox="0 0 20 20">
+      <path d="M3.25 9.1 10 3.5l6.75 5.6"/>
+      <path d="M5 7.75v7.5c0 .83.67 1.5 1.5 1.5h2.25v-4.5h2.5v4.5h2.25c.83 0 1.5-.67 1.5-1.5v-7.5"/>
+    </symbol>
+    <symbol id="i-barra-lateral" viewBox="0 0 20 20">
+      <rect x="2.5" y="3.75" width="15" height="12.5" rx="3"/>
+      <path d="M7.75 3.75v12.5"/>
+      <path d="M4.6 6.9h1.2M4.6 9.4h1.2"/>
+    </symbol>
+    <symbol id="i-voltar" viewBox="0 0 20 20">
+      <path d="M12.25 4.25 6.5 10l5.75 5.75"/>
+    </symbol>
+    <symbol id="i-seta-direita" viewBox="0 0 20 20">
+      <path d="m7.75 4.25 5.75 5.75-5.75 5.75"/>
+    </symbol>
+    <symbol id="i-seta" viewBox="0 0 20 20">
+      <path d="M4 10h11.5M11 5.25 15.75 10 11 14.75"/>
+    </symbol>
+    <symbol id="i-olho" viewBox="0 0 20 20">
+      <path d="M1.9 10S4.8 4.6 10 4.6 18.1 10 18.1 10 15.2 15.4 10 15.4 1.9 10 1.9 10Z"/>
+      <circle cx="10" cy="10" r="2.6"/>
+    </symbol>
+    <symbol id="i-olho-cortado" viewBox="0 0 20 20">
+      <path d="M8.2 4.8A8.4 8.4 0 0 1 10 4.6c5.2 0 8.1 5.4 8.1 5.4a14 14 0 0 1-2.2 2.9M5.4 6.1A14 14 0 0 0 1.9 10s2.9 5.4 8.1 5.4a7.8 7.8 0 0 0 3.8-1"/>
+      <path d="M8.2 8.2a2.6 2.6 0 0 0 3.6 3.6"/>
+      <path d="m3 3 14 14"/>
+    </symbol>
+    <symbol id="i-sair" viewBox="0 0 20 20">
+      <path d="M8 3.5H5.5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2H8"/>
+      <path d="m12.5 6.5 3.5 3.5-3.5 3.5M16 10H7.5"/>
+    </symbol>
+    <symbol id="i-alerta" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="7.75"/>
+      <path d="M10 6.2v4.6"/>
+      <circle cx="10" cy="13.7" r="0.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-envelope" viewBox="0 0 20 20">
+      <rect x="2.5" y="4.25" width="15" height="11.5" rx="2.5"/>
+      <path d="m3.2 5.4 6.8 5.1 6.8-5.1"/>
+    </symbol>
+    <symbol id="i-check-circulo" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="7.75"/>
+      <path d="m6.9 10.2 2.2 2.2 4.1-4.6"/>
+    </symbol>
+    <symbol id="i-sem-conexao" viewBox="0 0 20 20">
+      <path d="M2.2 7.6a11.3 11.3 0 0 1 15.6 0M4.8 10.6a7.5 7.5 0 0 1 10.4 0M7.4 13.5a3.7 3.7 0 0 1 5.2 0"/>
+      <path d="m3 3 14 14"/>
+    </symbol>
+    <symbol id="i-lua" viewBox="0 0 20 20">
+      <path d="M16.6 12.1A6.9 6.9 0 0 1 7.9 3.4a6.9 6.9 0 1 0 8.7 8.7Z"/>
+    </symbol>
+    <symbol id="i-sol" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="3.4"/>
+      <path d="M10 2.25v1.5M10 16.25v1.5M4.52 4.52l1.06 1.06M14.42 14.42l1.06 1.06M2.25 10h1.5M16.25 10h1.5M4.52 15.48l1.06-1.06M14.42 5.58l1.06-1.06"/>
+    </symbol>
+    <symbol id="i-recarregar" viewBox="0 0 20 20">
+      <path d="M15.75 10a5.75 5.75 0 1 1-1.7-4.08"/>
+      <path d="M15.25 3.5v3.25H12"/>
+    </symbol>
+    <symbol id="i-grade" viewBox="0 0 20 20">
+      <rect x="3" y="3" width="5.75" height="5.75" rx="1.5"/>
+      <rect x="11.25" y="3" width="5.75" height="5.75" rx="1.5"/>
+      <rect x="3" y="11.25" width="5.75" height="5.75" rx="1.5"/>
+      <rect x="11.25" y="11.25" width="5.75" height="5.75" rx="1.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<noscript>
+  <p style="padding:24px;text-align:center">Ative o JavaScript do navegador para usar os sistemas da Financial Experts.</p>
+</noscript>
+
+<!-- As barras da marca Financial Experts (logo): direita, esquerda, direita… -->
+<template id="modelo-marca">
+  <svg class="marca-barras" viewBox="0 0 70 62" aria-hidden="true" focusable="false">
+    <rect class="barra-dir" x="35" y="0" width="35" height="12.4" rx="1.2"/>
+    <rect class="barra-esq" x="0" y="12.4" width="35" height="12.4" rx="1.2"/>
+    <rect class="barra-dir" x="35" y="24.8" width="35" height="12.4" rx="1.2"/>
+    <rect class="barra-esq" x="0" y="37.2" width="35" height="12.4" rx="1.2"/>
+    <rect class="barra-dir" x="35" y="49.6" width="35" height="12.4" rx="1.2"/>
+  </svg>
+</template>
+
+<!-- ============ ABERTURA (enquanto confere se já há sessão) ============ -->
+<div class="tela-inicial" id="tela-inicial" role="status" aria-label="Carregando">
+  <div class="marca" data-marca></div>
+</div>
+
+<!-- ============ ACESSO ============ -->
+<div class="tela-auth" id="tela-auth" hidden>
+  <div class="auth-fundo" aria-hidden="true">
+    <span class="auth-fundo__luz auth-fundo__luz--evolution"></span>
+    <span class="auth-fundo__luz auth-fundo__luz--elas"></span>
+    <span class="auth-fundo__luz auth-fundo__luz--master"></span>
+  </div>
+
+  <div class="cartao-auth" id="cartao-auth">
+    <div class="marca">
+      <div data-marca></div>
+      <span class="marca__nome">Financial Experts</span>
+    </div>
+
+    <!-- Entrar ou criar conta -->
+    <div class="abas abas--auth" id="abas-auth" role="tablist" aria-label="Entrar ou criar conta">
+      <span class="abas__pilula" aria-hidden="true"></span>
+      <button type="button" class="abas__aba" role="tab" id="aba-entrar" aria-controls="form-login" aria-selected="true">Entrar</button>
+      <button type="button" class="abas__aba" role="tab" id="aba-criar" aria-controls="form-cadastro" aria-selected="false" tabindex="-1">Criar conta</button>
+    </div>
+
+    <!-- Entrar -->
+    <form class="form-auth" id="form-login" role="tabpanel" aria-labelledby="aba-entrar" novalidate hidden>
+      <div class="form-auth__cabecalho">
+        <h1 class="form-auth__titulo">Entre na sua conta</h1>
+        <p class="form-auth__descricao">Um login só para todos os sistemas dos seus cursos.</p>
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="login-email">E-mail</label>
+        <input class="entrada" id="login-email" name="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@email.com" required aria-describedby="login-erro">
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="login-senha">Senha</label>
+        <div class="campo-senha">
+          <input class="entrada" id="login-senha" name="senha" type="password" autocomplete="current-password" required aria-describedby="login-erro">
+          <button type="button" class="alternar-senha" data-alvo="login-senha" aria-pressed="false" aria-label="Mostrar senha" title="Mostrar senha">
+            <svg class="icone icone-mostrar"><use href="#i-olho"/></svg>
+            <svg class="icone icone-ocultar"><use href="#i-olho-cortado"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="mensagem mensagem--erro" id="login-erro" role="alert" hidden></p>
+      <p class="mensagem mensagem--sucesso" id="login-aviso" role="status" hidden></p>
+      <div class="form-auth__acoes">
+        <button type="submit" class="botao-primario" id="btn-entrar"><span class="giro" aria-hidden="true"></span><span class="rotulo-botao">Entrar</span></button>
+        <button type="button" class="botao-texto" data-ir-para="recuperar">Esqueci minha senha</button>
+      </div>
+    </form>
+
+    <!-- Criar conta -->
+    <form class="form-auth" id="form-cadastro" role="tabpanel" aria-labelledby="aba-criar" novalidate hidden>
+      <div class="form-auth__cabecalho">
+        <h1 class="form-auth__titulo">Crie a sua conta</h1>
+        <p class="form-auth__descricao">Com ela você entra em todos os sistemas dos cursos.</p>
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="cadastro-nome">Nome completo</label>
+        <input class="entrada" id="cadastro-nome" name="nome" type="text" autocomplete="name" placeholder="Nome e sobrenome" required aria-describedby="cadastro-erro">
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="cadastro-email">E-mail</label>
+        <input class="entrada" id="cadastro-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@email.com" required aria-describedby="cadastro-erro">
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="cadastro-senha">Crie uma senha</label>
+        <div class="campo-senha">
+          <input class="entrada" id="cadastro-senha" name="senha" type="password" autocomplete="new-password" minlength="6" required aria-describedby="cadastro-senha-ajuda cadastro-erro">
+          <button type="button" class="alternar-senha" data-alvo="cadastro-senha" aria-pressed="false" aria-label="Mostrar senha" title="Mostrar senha">
+            <svg class="icone icone-mostrar"><use href="#i-olho"/></svg>
+            <svg class="icone icone-ocultar"><use href="#i-olho-cortado"/></svg>
+          </button>
+        </div>
+        <p class="campo__ajuda" id="cadastro-senha-ajuda">Use pelo menos 6 caracteres.</p>
+      </div>
+      <p class="mensagem mensagem--erro" id="cadastro-erro" role="alert" hidden></p>
+      <div class="form-auth__acoes">
+        <button type="submit" class="botao-primario" id="btn-criar-conta"><span class="giro" aria-hidden="true"></span><span class="rotulo-botao">Criar minha conta</span></button>
+      </div>
+    </form>
+
+    <!-- Conta criada, falta confirmar o e-mail (quando o Supabase pede) -->
+    <div class="form-auth" id="painel-confirmar" hidden>
+      <div class="confirmacao" role="status">
+        <svg class="icone" aria-hidden="true"><use href="#i-envelope"/></svg>
+        <h1 class="form-auth__titulo">Confirme o seu e-mail</h1>
+        <p>Enviamos um link para <strong id="confirmar-email"></strong>. Abra o link para ativar a conta e depois entre.</p>
+      </div>
+      <div class="form-auth__acoes">
+        <button type="button" class="botao-primario" data-ir-para="login">Voltar para o login</button>
+      </div>
+    </div>
+
+    <!-- Pedir link de redefinição -->
+    <form class="form-auth" id="form-recuperar" novalidate hidden>
+      <div class="form-auth__cabecalho">
+        <h1 class="form-auth__titulo">Redefinir senha</h1>
+        <p class="form-auth__descricao">Informe seu e-mail para receber um link e criar uma senha nova.</p>
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="recuperar-email">E-mail</label>
+        <input class="entrada" id="recuperar-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@email.com" required aria-describedby="recuperar-erro">
+      </div>
+      <p class="mensagem mensagem--erro" id="recuperar-erro" role="alert" hidden></p>
+      <div class="form-auth__acoes">
+        <button type="submit" class="botao-primario" id="btn-enviar-link"><span class="giro" aria-hidden="true"></span><span class="rotulo-botao">Enviar link</span></button>
+        <button type="button" class="botao-texto" data-ir-para="login">Voltar para o login</button>
+      </div>
+    </form>
+
+    <!-- Link enviado -->
+    <div class="form-auth" id="painel-link-enviado" hidden>
+      <div class="confirmacao" role="status">
+        <svg class="icone" aria-hidden="true"><use href="#i-envelope"/></svg>
+        <h1 class="form-auth__titulo">Confira seu e-mail</h1>
+        <p>Se houver uma conta para <strong id="link-enviado-email"></strong>, o link chega em alguns minutos. Procure também na caixa de spam.</p>
+      </div>
+      <div class="form-auth__acoes">
+        <button type="button" class="botao-primario" data-ir-para="login">Voltar para o login</button>
+      </div>
+    </div>
+
+    <!-- Criar senha nova (aberto pelo link do e-mail) -->
+    <form class="form-auth" id="form-nova-senha" novalidate hidden>
+      <div class="form-auth__cabecalho">
+        <h1 class="form-auth__titulo">Criar senha nova</h1>
+        <p class="form-auth__descricao">Depois de salvar, entre com a senha nova.</p>
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="nova-senha">Senha nova</label>
+        <div class="campo-senha">
+          <input class="entrada" id="nova-senha" name="nova-senha" type="password" autocomplete="new-password" minlength="6" required aria-describedby="nova-senha-ajuda nova-senha-erro">
+          <button type="button" class="alternar-senha" data-alvo="nova-senha" aria-pressed="false" aria-label="Mostrar senha" title="Mostrar senha">
+            <svg class="icone icone-mostrar"><use href="#i-olho"/></svg>
+            <svg class="icone icone-ocultar"><use href="#i-olho-cortado"/></svg>
+          </button>
+        </div>
+        <p class="campo__ajuda" id="nova-senha-ajuda">Use pelo menos 6 caracteres.</p>
+      </div>
+      <div class="campo">
+        <label class="campo__rotulo" for="confirmar-senha">Confirmar senha nova</label>
+        <div class="campo-senha">
+          <input class="entrada" id="confirmar-senha" name="confirmar-senha" type="password" autocomplete="new-password" required aria-describedby="nova-senha-erro">
+          <button type="button" class="alternar-senha" data-alvo="confirmar-senha" aria-pressed="false" aria-label="Mostrar senha" title="Mostrar senha">
+            <svg class="icone icone-mostrar"><use href="#i-olho"/></svg>
+            <svg class="icone icone-ocultar"><use href="#i-olho-cortado"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="mensagem mensagem--erro" id="nova-senha-erro" role="alert" hidden></p>
+      <div class="form-auth__acoes">
+        <button type="submit" class="botao-primario" id="btn-salvar-senha"><span class="giro" aria-hidden="true"></span><span class="rotulo-botao">Salvar senha nova</span></button>
+        <button type="button" class="botao-texto" id="btn-cancelar-nova-senha">Voltar para o login</button>
+      </div>
+    </form>
+
+    <!-- Os cursos que este login abre (vêm do catálogo) -->
+    <div class="auth-cursos">
+      <p class="auth-cursos__titulo">Um acesso para os cursos</p>
+      <ul class="auth-cursos__lista" id="auth-cursos" role="list"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PORTAL ============ -->
+<div class="app" id="app" data-tela="inicio" hidden>
+
+  <aside class="barra-lateral" id="barra-lateral" aria-label="Menu principal">
+    <div class="barra-lateral__marca">
+      <img src="frontend/img/financial-experts.png" alt="Financial Experts" width="202" height="62">
+    </div>
+    <nav aria-label="Seções">
+      <ul class="menu">
+        <li>
+          <a class="menu__item" id="link-inicio" href="./" aria-current="page">
+            <svg class="icone" aria-hidden="true"><use href="#i-casa"/></svg>
+            <span>Início</span>
+          </a>
+        </li>
+      </ul>
+      <h2 class="menu__titulo" id="titulo-menu-cursos">Cursos</h2>
+      <ul class="menu" id="menu-cursos" aria-labelledby="titulo-menu-cursos"></ul>
+    </nav>
+  </aside>
+
+  <div class="veu" id="veu" aria-hidden="true"></div>
+
+  <main class="principal" id="principal" tabindex="-1">
+    <!-- Cabeçalho comum às telas; o que é de uma tela só tem data-tela -->
+    <header class="cabecalho" id="cabecalho">
+      <div class="cabecalho__barra">
+        <button type="button" class="botao-icone" id="btn-barra-lateral" aria-controls="barra-lateral" aria-expanded="true" aria-label="Barra lateral" title="Ocultar barra lateral">
+          <svg class="icone" aria-hidden="true"><use href="#i-barra-lateral"/></svg>
+        </button>
+
+        <div class="cabecalho__tela" data-tela="inicio">
+          <div class="cabecalho__titulos">
+            <h1 class="titulo-grande" id="titulo-inicio" tabindex="-1">Olá!</h1>
+            <p class="subtitulo"><span id="subtitulo-inicio">Que bom ter você aqui.</span></p>
+          </div>
+        </div>
+
+        <div class="cabecalho__tela" data-tela="curso" hidden>
+          <button type="button" class="botao-icone botao-voltar" id="btn-voltar-curso" aria-label="Voltar para o início" title="Voltar para o início">
+            <svg class="icone" aria-hidden="true"><use href="#i-voltar"/></svg>
+          </button>
+          <img class="cabecalho__marca" id="curso-marca" src="data:," alt="">
+          <div class="cabecalho__titulos">
+            <h1 class="titulo-grande" id="titulo-curso" tabindex="-1">Curso</h1>
+            <p class="subtitulo"><span id="subtitulo-curso"></span></p>
+          </div>
+        </div>
+
+        <div class="cabecalho__tela" data-tela="sistema" hidden>
+          <button type="button" class="botao-icone botao-voltar" id="btn-voltar-sistema" aria-label="Voltar para o curso" title="Voltar para o curso">
+            <svg class="icone" aria-hidden="true"><use href="#i-voltar"/></svg>
+          </button>
+          <span class="icone-sistema icone-sistema--cabecalho" id="sistema-icone" aria-hidden="true"></span>
+          <div class="cabecalho__titulos">
+            <h1 class="titulo-grande" id="titulo-sistema" tabindex="-1">Sistema</h1>
+            <p class="subtitulo" id="subtitulo-sistema"></p>
+          </div>
+          <div class="cabecalho__acoes">
+            <div class="abas abas--paginas" id="abas-paginas" role="tablist" aria-label="Atividades do sistema" hidden></div>
+            <button type="button" class="botao-icone" id="btn-recarregar-sistema" aria-label="Recarregar o sistema" title="Recarregar o sistema">
+              <svg class="icone" aria-hidden="true"><use href="#i-recarregar"/></svg>
+            </button>
+            <button type="button" class="botao-icone botao-tema" id="btn-tema" aria-pressed="false" aria-label="Tema escuro nos sistemas" title="Tema escuro nos sistemas" hidden>
+              <svg class="icone icone-lua" aria-hidden="true"><use href="#i-lua"/></svg>
+              <svg class="icone icone-sol" aria-hidden="true"><use href="#i-sol"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="botao-conta" id="btn-conta" popovertarget="menu-conta" aria-label="Conta" title="Conta">
+          <span class="avatar" id="conta-avatar" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- No celular, as atividades do sistema ganham uma linha só delas -->
+      <div class="cabecalho__paginas" id="linha-paginas" data-tela="sistema" hidden>
+        <div class="abas abas--paginas" id="abas-paginas-celular" role="tablist" aria-label="Atividades do sistema"></div>
+      </div>
+    </header>
+
+    <!-- Início: a escolha do curso -->
+    <section class="conteudo" data-tela="inicio" aria-labelledby="inicio-titulo">
+      <div class="inicio__cabeca">
+        <h2 class="inicio__titulo" id="inicio-titulo">Escolha o seu curso</h2>
+        <p class="inicio__descricao">Cada curso tem os seus sistemas. Você pode trocar de curso quando quiser, pelo menu.</p>
+      </div>
+      <ul class="portais" id="portais" role="list" aria-labelledby="inicio-titulo"></ul>
+      <div class="continuar" id="continuar" hidden></div>
+    </section>
+
+    <!-- Um curso: o banner e os sistemas dele -->
+    <section class="conteudo" data-tela="curso" aria-labelledby="titulo-curso" hidden>
+      <div class="banner acende" id="banner-curso"></div>
+      <div class="secao">
+        <h2 class="secao__titulo" id="rotulo-sistemas">Sistemas</h2>
+        <p class="secao__descricao" id="descricao-sistemas"></p>
+      </div>
+      <ul class="sistemas" id="lista-sistemas" role="list" aria-labelledby="rotulo-sistemas"></ul>
+      <div class="estado" id="estado-curso" hidden></div>
+    </section>
+
+    <!-- Um sistema aberto, dentro da moldura -->
+    <section class="conteudo conteudo--sistema" data-tela="sistema" aria-labelledby="titulo-sistema" hidden>
+      <div class="moldura" id="moldura">
+        <div class="carregando-sistema" id="carregando-sistema" hidden>
+          <span class="carregando-sistema__icone" id="carregando-icone" aria-hidden="true"></span>
+          <p class="carregando-sistema__texto" id="carregando-texto">Abrindo…</p>
+          <span class="carregando-sistema__barra" aria-hidden="true"></span>
+        </div>
+        <div class="estado" id="estado-sistema" hidden></div>
+      </div>
+    </section>
+
+    <p class="vh" id="aviso-tela" aria-live="polite"></p>
+  </main>
+
+  <div class="menu-conta" id="menu-conta" popover>
+    <div class="menu-conta__perfil">
+      <span class="avatar" id="menu-conta-avatar" aria-hidden="true"></span>
+      <div>
+        <p class="menu-conta__nome" id="menu-conta-nome"></p>
+        <p class="menu-conta__email" id="menu-conta-email"></p>
+      </div>
+    </div>
+    <hr class="separador">
+    <button type="button" class="menu-conta__item" id="btn-sair">
+      <svg class="icone" aria-hidden="true"><use href="#i-sair"/></svg>
+      Sair
+    </button>
+  </div>
+</div>
+
+<!-- Aviso de cookies (LGPD): aparece até a pessoa tocar em "Entendi" -->
+<div class="aviso-cookies" id="aviso-cookies" role="region" aria-label="Aviso de cookies" hidden>
+  <p>Usamos cookies e o armazenamento do navegador só para os sistemas funcionarem: manter você conectado, lembrar suas preferências e guardar rascunhos até você salvar. Nada de rastreamento ou anúncios.</p>
+  <button type="button" class="botao-primario" id="btn-cookies">Entendi</button>
+</div>
+
+<script type="module" src="frontend/main.js"></script>
+</body>
+</html>
