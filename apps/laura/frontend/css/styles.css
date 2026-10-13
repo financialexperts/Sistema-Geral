@@ -28,7 +28,7 @@
   --amber:#B87B00;
   --amber-soft:#FFF1CC;
   --radius:16px;
-  --topbar-h:60px;
+  --topbar-h:0px; /* sem a barra do topo: o cabeçalho é do portal */
   --shadow-sm:0 1px 2px rgba(39,34,89,.06);
   --shadow:0 1px 2px rgba(39,34,89,.05), 0 14px 32px -20px rgba(39,34,89,.45);
   --spring:cubic-bezier(.34,1.56,.64,1);
@@ -125,21 +125,6 @@ input{font:inherit}
 .glass:active{transform:scale(.97)}
 
 /* ---------- Topbar ---------- */
-.topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
-[data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-.topbar__in{display:flex;align-items:center;gap:14px;min-height:var(--topbar-h)}
-.brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0;text-decoration:none;border-radius:8px;transition:opacity .15s}
-.brand:hover{opacity:.8}
-.brand__logo{height:26px;width:auto;flex:none;display:block}
-[data-theme="light"] .brand__logo--dark{display:none}
-[data-theme="dark"] .brand__logo--light{display:none}
-.brand__sep{width:1px;height:22px;background:var(--line-strong);flex:none}
-.brand__name{font-family:var(--ff-display);font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
-.iconbtn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm)}
-.iconbtn:hover{border-color:var(--line-strong)}
-.iconbtn svg{position:absolute;top:50%;left:50%;width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s,transform .5s var(--spring)}
-[data-theme="dark"] .icon-moon{opacity:0;transform:translate(-50%,-50%) rotate(-100deg) scale(.4)}
-[data-theme="light"] .icon-sun{opacity:0;transform:translate(-50%,-50%) rotate(100deg) scale(.4)}
 
 /* ---------- Cartões ---------- */
 @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -544,10 +529,7 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
 /* Celular: a Laura e o balão menores; e a renda de cada opção desce pra baixo
    do texto. */
 @media (max-width:720px){
-  :root{--topbar-h:56px}
   .wrap{padding:0 16px}
-  .topbar__in{gap:8px}
-  .brand__name,.brand__sep{display:none}
   .actions{flex-direction:column-reverse}
   .btn{padding:13px 14px}
 
@@ -635,7 +617,7 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   *{transition:none!important;animation:none!important}
 }
 @media print{
-  .topbar,.actions,.surprise,footer,.toast,.bubble{display:none}
+  .actions,.surprise,footer,.toast,.bubble{display:none}
   .meters{position:static}
   body{background:#fff}
   .card,.optcard{box-shadow:none}

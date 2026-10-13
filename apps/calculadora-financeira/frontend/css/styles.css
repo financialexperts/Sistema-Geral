@@ -99,24 +99,7 @@ input{font:inherit}
 .glass:active{transform:scale(.96)}
 
 /* ---------- Topbar ---------- */
-.topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
-[data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-.topbar__in{display:flex;align-items:center;gap:14px;min-height:60px}
-.brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0;text-decoration:none;border-radius:8px;transition:opacity .15s}
-.brand:hover{opacity:.8}
-.brand__logo{height:26px;width:auto;flex:none;display:block}
-[data-theme="light"] .brand__logo--dark{display:none}
-[data-theme="dark"] .brand__logo--light{display:none}
-.brand__sep{width:1px;height:22px;background:var(--line-strong);flex:none}
-.brand__name{font-family:var(--ff-display);font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
-.iconbtn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm)}
-.iconbtn:hover{border-color:var(--line-strong)}
-.iconbtn svg{position:absolute;top:50%;left:50%;width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
-[data-theme="dark"] .icon-moon{opacity:0;transform:translate(-50%,-50%) rotate(-100deg) scale(.4)}
-[data-theme="light"] .icon-sun{opacity:0;transform:translate(-50%,-50%) rotate(100deg) scale(.4)}
 
-.userbox{display:flex;align-items:center;gap:10px;margin-right:2px}
-.userbox__email{font-size:13px;color:var(--ink-soft);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ---------- Carregando / setup ---------- */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:120px 0;color:var(--muted);font-size:14px}
@@ -177,16 +160,7 @@ input{font:inherit}
 .ok::before{content:"";flex:none;width:12px;height:12px;background-color:currentColor;-webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat}
 
 /* ---------- Login (mesma tela do Fluxo de Caixa) ---------- */
-.auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:36px;align-items:center;padding:36px 0 60px;min-height:calc(100vh - 220px)}
-.auth__intro h1{font-size:clamp(28px,4.4vw,40px);line-height:1.08;max-width:14ch}
-.auth__intro p{margin-top:16px;max-width:44ch;color:var(--ink-soft);font-size:15.5px}
-.auth__card{padding-bottom:6px}
 .tabs--2{grid-template-columns:repeat(2,1fr)}
-.auth__card .tabs{margin:0;padding:18px 18px 0}
-.auth__card .tab{padding:13px 15px;font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em}
-.auth__card .field+.field{margin-top:18px}
-.auth__card .field .hint{display:block;font-size:12.5px;color:var(--muted);margin:-5px 0 8px}
-.auth__card .input input{font-family:var(--ff-body);font-weight:400;text-align:left}
 /* remove o destaque azul/amarelo que o navegador aplica em campos preenchidos automaticamente (login salvo) */
 .input input:-webkit-autofill,
 .input input:-webkit-autofill:hover,
@@ -241,9 +215,6 @@ footer p+p{margin-top:8px}
 
 /* ---------- Responsive ---------- */
 @media (max-width:900px){
-  .auth{grid-template-columns:1fr;gap:26px;padding-top:20px;min-height:0}
-  .auth__intro{text-align:center}
-  .auth__intro h1,.auth__intro p{margin-left:auto;margin-right:auto}
 }
 @media (max-width:720px){
   .wrap{padding:0 16px}
@@ -251,13 +222,7 @@ footer p+p{margin-top:8px}
   .tab{padding:11px 14px;display:flex;align-items:baseline;gap:9px}
   .tab__n{margin-bottom:0}
   .fields{grid-template-columns:1fr}
-  .topbar__in{min-height:56px;gap:8px}
-  .brand__name,.brand__sep{display:none}
-  .userbox__email{display:none}
-  .auth{padding:32px 0}
-  .auth__intro h1{max-width:none}
   .tabs--2{grid-template-columns:repeat(2,1fr)}
-  .auth__card .tab{display:block}
   .actions{flex-direction:column-reverse}
   .result{padding:22px 20px 20px}
 }
@@ -265,7 +230,7 @@ footer p+p{margin-top:8px}
   *{transition:none!important;animation:none!important}
 }
 @media print{
-  .topbar,.actions,.tabs,footer{display:none}
+  .actions,.tabs,footer{display:none}
   body{background:#fff}
   .card{box-shadow:none}
 }

@@ -19,7 +19,7 @@
   --danger:#B3322A;
   --focus:#21867A;
   --radius:14px;
-  --topbar-h:60px;
+  --topbar-h:0px; /* sem a barra do topo: o cabeçalho é do portal */
   --shadow-sm:0 1px 2px rgba(39,34,89,.06);
   --shadow:0 1px 2px rgba(39,34,89,.05), 0 14px 32px -20px rgba(39,34,89,.45);
   --ff-display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
@@ -99,24 +99,7 @@ input{font:inherit}
 .glass:active{transform:scale(.97)}
 
 /* ---------- Topbar ---------- */
-.topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
-[data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-.topbar__in{display:flex;align-items:center;gap:14px;min-height:var(--topbar-h)}
-.brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0;text-decoration:none;border-radius:8px;transition:opacity .15s}
-.brand:hover{opacity:.8}
-.brand__logo{height:26px;width:auto;flex:none;display:block}
-[data-theme="light"] .brand__logo--dark{display:none}
-[data-theme="dark"] .brand__logo--light{display:none}
-.brand__sep{width:1px;height:22px;background:var(--line-strong);flex:none}
-.brand__name{font-family:var(--ff-display);font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
-.iconbtn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm)}
-.iconbtn:hover{border-color:var(--line-strong)}
-.iconbtn svg{position:absolute;top:50%;left:50%;width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
-[data-theme="dark"] .icon-moon{opacity:0;transform:translate(-50%,-50%) rotate(-100deg) scale(.4)}
-[data-theme="light"] .icon-sun{opacity:0;transform:translate(-50%,-50%) rotate(100deg) scale(.4)}
 
-.userbox{display:flex;align-items:center;gap:10px;margin-right:2px}
-.userbox__email{font-size:13px;color:var(--ink-soft);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ---------- Loading / setup ---------- */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:120px 0;color:var(--muted);font-size:14px}
@@ -189,11 +172,6 @@ input{font:inherit}
 .tab[aria-selected="true"] .tab__n{color:color-mix(in srgb,var(--accent-contrast) 68%,transparent)}
 
 /* ---------- Auth ---------- */
-.auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:40px;align-items:center;padding:36px 0 60px;min-height:calc(100vh - 200px)}
-.auth__intro h1{font-size:clamp(28px,4.4vw,42px);line-height:1.08;max-width:14ch}
-.auth__intro p{margin-top:16px;max-width:44ch;color:var(--ink-soft);font-size:15.5px}
-.auth__card{padding-bottom:6px}
-.auth__card .tabs{margin:0;border-top:0;padding-top:18px;padding-left:18px;padding-right:18px}
 
 /* ---------- Onboarding ---------- */
 .hero{padding:40px 0 6px}
@@ -459,9 +437,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
 
 /* ---------- Responsive ---------- */
 @media (max-width:900px){
-  .auth{grid-template-columns:1fr;gap:26px;padding-top:20px;min-height:0}
-  .auth__intro{text-align:center}
-  .auth__intro p{margin-left:auto;margin-right:auto}
   .profiles{grid-template-columns:1fr}
   /* numa coluna só o anel não precisa da largura toda: fica centralizado e a
      legenda vem logo abaixo */
@@ -469,16 +444,9 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .invchart__pie{max-width:360px}
 }
 @media (max-width:720px){
-  :root{--topbar-h:56px}
   .wrap{padding:0 16px}
-  .topbar__in{gap:8px}
-  .brand__name,.brand__sep{display:none}
-  .userbox__email{display:none}
-  .auth{padding:32px 0 32px}
-  .auth__intro h1{max-width:none}
   .card__head{padding:18px 18px 0}
   .card__body{padding:18px 18px 20px}
-  .auth__card .tabs{padding-left:18px;padding-right:18px}
   .tabs{grid-template-columns:1fr;gap:7px}
   .tabs--2{grid-template-columns:repeat(2,1fr)}
   /* os atalhos da carteira não empilham: grudados no alto, três linhas de
@@ -545,18 +513,13 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .alloccat__name{font-size:15px}
 }
 /* ============ aviso de cookies ============ */
-.cookiebar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:50;width:min(640px,calc(100% - 32px));display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-.cookiebar[hidden]{display:none}
-.cookiebar__text{margin:0;font-size:13px;line-height:1.5;color:var(--ink-soft)}
 @media (max-width:560px){
-  .cookiebar{flex-direction:column;align-items:stretch;bottom:12px;gap:10px}
-  .cookiebar .btn{width:100%}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
 }
 @media print{
-  .topbar,.actions,.chips,footer,.tabs,#pf-change,#pf-edit-inv,.cookiebar{display:none}
+  .actions,.chips,footer,.tabs,#pf-change,#pf-edit-inv{display:none}
   body{background:#fff}
   .card{box-shadow:none}
 }

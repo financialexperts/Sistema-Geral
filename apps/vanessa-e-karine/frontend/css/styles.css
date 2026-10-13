@@ -39,7 +39,7 @@
   /* a linha da barra do topo e a altura dela inteira: no celular, as abas
      descem pra uma segunda linha e a barra fica mais alta. O que gruda
      embaixo dela (medidores, cartões) desconta o --header-h */
-  --topbar-h:60px;
+  --topbar-h:0px; /* sem a barra do topo: o cabeçalho é do portal */
   --header-h:var(--topbar-h);
   --shadow-sm:0 1px 2px rgba(39,34,89,.06);
   --shadow:0 1px 2px rgba(39,34,89,.05), 0 14px 32px -20px rgba(39,34,89,.45);
@@ -148,29 +148,11 @@ button{font:inherit;color:inherit}
 .glass:active{transform:scale(.97)}
 
 /* ---------- Topbar ---------- */
-.topbar{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
-[data-theme="dark"] .topbar{box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-.topbar__in{display:flex;align-items:center;gap:14px;min-height:var(--topbar-h)}
-.brand{display:flex;align-items:center;gap:12px;flex:none;text-decoration:none;border-radius:8px;transition:opacity .15s}
-.brand:hover{opacity:.8}
-.brand__logo{height:26px;width:auto;flex:none;display:block}
-[data-theme="light"] .brand__logo--dark{display:none}
-[data-theme="dark"] .brand__logo--light{display:none}
-.brand__sep{width:1px;height:22px;background:var(--line-strong);flex:none}
 
 /* As abas do sistema, uma por atividade: a da página aberta fica em
    destaque, como um botão pressionado. */
-.tabs{display:flex;gap:2px;min-width:0;margin-right:auto;padding:3px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface-2) 80%,transparent)}
-.tabs__link{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;padding:6px 12px;border-radius:9px;font-family:var(--ff-display);font-weight:600;font-size:14px;letter-spacing:-.01em;line-height:1.2;color:var(--muted);text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s,box-shadow .15s}
-.tabs__link .ico{width:16px;height:16px}
-.tabs__text{overflow:hidden;text-overflow:ellipsis}
-@media (hover:hover){.tabs__link:not([aria-current]):hover{color:var(--ink);background:color-mix(in srgb,var(--surface) 60%,transparent)}}
-.tabs__link[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm),inset 0 0 0 1px var(--line)}
-.tabs__link[aria-current="page"] .ico{color:var(--accent-ink)}
 
 /* quem entrou e o botão de sair */
-.userbox{display:flex;align-items:center;gap:10px;flex:none;min-width:0;margin-right:2px}
-.userbox__name{max-width:200px;font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn.btn--sm{flex:none;padding:8px 12px;font-size:13px;border-radius:9px}
 
 /* ---------- Login (o mesmo do Fluxo de Caixa) ---------- */
@@ -214,23 +196,9 @@ button{font:inherit;color:inherit}
 .ok::before{content:"";flex:none;width:12px;height:12px;background-color:currentColor;-webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat}
 .linklike{display:block;margin:14px auto 0;background:none;border:0;padding:2px;color:var(--accent-ink);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 
-.auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:40px;align-items:center;padding:36px 0 60px;min-height:calc(100vh - 200px)}
-.auth__intro h1{margin-top:14px;font-size:clamp(28px,4.4vw,42px);line-height:1.08;max-width:14ch}
-.auth__intro p:not(.card__kicker){margin-top:16px;max-width:44ch;color:var(--ink-soft);font-size:15.5px}
-.auth__intro strong{font-weight:600;color:var(--ink)}
-.auth__card{padding-bottom:6px}
-.authtabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:18px 18px 0}
-.authtab{text-align:left;border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;font-family:var(--ff-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em;cursor:pointer;box-shadow:var(--shadow-sm)}
-.authtab:hover{border-color:var(--line-strong)}
-.authtab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);transform:translateY(-1px)}
 /* o botão sozinho no pé do cartão, sem a linha de cima (vale por cima do
    .actions, que vem depois) */
 .actions.actions--1{border-top:0;padding-top:4px;margin-top:20px}
-.iconbtn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;box-shadow:var(--shadow-sm)}
-.iconbtn:hover{border-color:var(--line-strong)}
-.iconbtn svg{position:absolute;top:50%;left:50%;width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s,transform .5s var(--spring)}
-[data-theme="dark"] .icon-moon{opacity:0;transform:translate(-50%,-50%) rotate(-100deg) scale(.4)}
-[data-theme="light"] .icon-sun{opacity:0;transform:translate(-50%,-50%) rotate(100deg) scale(.4)}
 
 /* ---------- Cartões ---------- */
 @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -735,10 +703,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   .ledger__row{grid-template-columns:auto minmax(0,1fr)}
   .cmp{grid-column:1 / -1;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;text-align:left}
   /* o login: o texto em cima, centralizado, e o cartão embaixo */
-  .auth{grid-template-columns:1fr;gap:26px;padding-top:20px;min-height:0}
-  .auth__intro{text-align:center}
-  .auth__intro p:not(.card__kicker){margin-left:auto;margin-right:auto}
-  .auth__intro h1{margin-left:auto;margin-right:auto}
 }
 
 /* Até 1040px a coluna das duas deixaria o texto apertado. Então elas sobem
@@ -746,7 +710,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
    embaixo na largura toda. */
 @media (max-width:1040px){
   /* na barra do topo, ao lado das abas, só cabe o botão de sair */
-  .userbox__name{display:none}
   .intro{grid-template-columns:minmax(0,1fr);margin-top:72px;padding:0 24px 22px}
   .intro__duo{order:-1;display:flex;align-items:center;justify-content:center;gap:8px;margin:-56px -24px 0;padding:0 24px}
   /* a linha onde elas "pisam" fica por cima da imagem (a roupa escondida não cobre) */
@@ -774,15 +737,7 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
 @media (max-width:720px){
   /* a barra do topo em duas linhas: o logo e o tema em cima (10 + 36px) e
      as abas embaixo, meio a meio (10 + 40 + 8px) */
-  :root{--header-h:104px}
   .wrap{padding:0 16px}
-  .topbar__in{flex-wrap:wrap;gap:10px 8px;min-height:0;padding-top:10px;padding-bottom:8px}
-  .brand{margin-right:auto}
-  .brand__sep{display:none}
-  .tabs{order:3;flex:1 0 100%;height:40px;margin-right:0}
-  .tabs__link{flex:1 1 0;padding:0 8px;font-size:13.5px}
-  .auth{padding:28px 0 32px}
-  .auth__intro h1{max-width:none}
   .card__body{padding:18px 18px 20px}
   .actions{flex-direction:column-reverse}
   .btn{padding:13px 14px}
@@ -870,8 +825,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
 /* celular estreito: as abas sem o ícone, pra "Seu dinheiro no tempo" caber
    inteiro na metade dele */
 @media (max-width:440px){
-  .tabs__link [data-icon]{display:none}
-  .tabs__link{font-size:13px}
 }
 
 @media (max-width:480px){
@@ -889,7 +842,6 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
 }
 @media (max-width:380px){
   /* as abas do tamanho do nome, pra "Seu dinheiro no tempo" caber inteiro */
-  .tabs__link{flex:1 1 auto;padding:0 6px;font-size:12.5px}
   .card__body{padding:16px}
   .meter__label{font-size:9.5px;letter-spacing:.05em}
   .meter__nums{font-size:11.5px;white-space:normal}
@@ -908,7 +860,7 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding:22px 0 40px;font
   *{transition:none!important;animation:none!important}
 }
 @media print{
-  .topbar,.actions,.steps,.sfoot__btns,.howto__tip,footer,.toast,.bubble{display:none}
+  .actions,.steps,.sfoot__btns,.howto__tip,footer,.toast,.bubble{display:none}
   .meters{position:static}
   body{background:#fff}
   .card{box-shadow:none}

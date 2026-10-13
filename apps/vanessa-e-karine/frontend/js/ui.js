@@ -24,12 +24,8 @@
     root.setAttribute("data-theme", "dark");
   }
   syncThemeColor();
-  el("tema").addEventListener("click", function () {
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    syncThemeColor();
-    try { localStorage.setItem("tema", next); } catch (err) {}
-  });
+  // O botão de trocar o tema fica no cabeçalho do portal; a troca chega
+  // aqui pelo apps/compartilhado/portal.js (mesma chave "tema").
 
   /* ============ liquid glass: brilho que segue o ponteiro ============ */
   document.addEventListener("pointermove", function (e) {

@@ -343,11 +343,8 @@
   } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
     root.setAttribute("data-theme", "dark");
   }
-  document.getElementById("tema").addEventListener("click", function () {
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    try { localStorage.setItem("tema", next); } catch (err) {}
-  });
+  // O botão de trocar o tema fica no cabeçalho do portal; a troca chega
+  // aqui pelo apps/compartilhado/portal.js (mesma chave "tema").
 
   /* ============ liquid glass: brilho que segue o ponteiro ============ */
   document.querySelectorAll(".glass").forEach(function (el) {
