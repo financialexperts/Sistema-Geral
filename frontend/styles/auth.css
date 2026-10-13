@@ -236,7 +236,7 @@
   font: 600 0.8125rem/1 var(--fonte);
   color: var(--cor-texto);
 }
-.auth-curso img {
+.auth-curso__marca {
   width: 28px;
   height: 28px;
   border-radius: 8px;

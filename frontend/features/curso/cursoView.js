@@ -88,6 +88,12 @@ export function atualizarResumos(perfil) {
   }
 }
 
+// O curso que está desenhado na página (voltando de um sistema dele, a
+// página não é redesenhada: o cartão e a rolagem continuam onde estavam).
+export function cursoDesenhado() {
+  return cursoAberto?.id ?? null;
+}
+
 export function cartaoDoSistema(sistemaId) {
   return els.lista.querySelector(`.cartao-sistema[data-sistema="${CSS.escape(sistemaId)}"]`);
 }
