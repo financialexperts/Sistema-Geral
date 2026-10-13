@@ -4,7 +4,6 @@ import {
   cursoPorId, cursosDoSistema, listarCursos, paginaDoSistema, sistemaPorId,
 } from '../backend/domain/catalogo.js';
 import { escapeHtml } from './shared/dom.js';
-import { marcarChegada, trocarComTransicao } from './shared/transicao.js';
 import { conferirSessao, iniciarAutenticacao, sair } from './features/auth/auth.js';
 import {
   anunciar, atualizarConta, esconderApp, iniciarShell, mostrarApp, rolarParaOTopo, trocarTela,
@@ -15,10 +14,10 @@ import {
 import { iniciarNavegacao, marcarNavegacao } from './features/app/navegacao.js';
 import { estiloDoCurso, pintarComCurso } from './features/cursos/aparencia.js';
 import {
-  atualizarCumprimento, atualizarUltimo, focarPortal, iniciarInicio, portalDoCurso,
+  atualizarCumprimento, atualizarUltimo, focarPortal, iniciarInicio,
 } from './features/inicio/inicioView.js';
 import {
-  atualizarResumos, cartaoDoSistema, cursoDesenhado, focarSistema, iniciarCurso, limparCurso, mostrarCurso,
+  atualizarResumos, cursoDesenhado, focarSistema, iniciarCurso, limparCurso, mostrarCurso,
 } from './features/curso/cursoView.js';
 import { atualizarSubtitulo, fecharSistema, iniciarSistema, mostrarSistema } from './features/sistema/sistemaView.js';
 import { guardarUltimo, lerUltimo } from './features/sistemas/ultimo.js';
@@ -107,7 +106,7 @@ function mostrarRota(pedida) {
   const rota = conferirRota(pedida);
   const anterior = state.rota;
   state.rota = rota;
-  trocarComTransicao(() => desenhar(rota, anterior), { antes: saindo(anterior, rota) });
+  desenhar(rota, anterior);
 }
 
 function desenhar(rota, anterior) {
@@ -118,9 +117,6 @@ function desenhar(rota, anterior) {
     trocarTela('inicio', { voltarRolagem: Boolean(anterior) });
     document.title = 'Financial Experts';
     if (anterior?.curso) {
-      const portal = portalDoCurso(anterior.curso.id);
-      marcarChegada(portal, 'arte-curso');
-      marcarChegada(portal?.querySelector('.portal__logo'), 'logo-curso');
       focarPortal(anterior.curso.id);
     } else if (anterior) {
       document.getElementById('titulo-inicio').focus({ preventScroll: true });
@@ -133,18 +129,11 @@ function desenhar(rota, anterior) {
 
   if (rota.tela === 'curso') {
     const voltandoDoSistema = anterior?.tela === 'sistema' && anterior.curso.id === rota.curso.id;
-    if (cursoDesenhado() !== rota.curso.id) mostrarCurso(rota.curso, { perfil: state.perfil });
-    else document.title = `${rota.curso.nome} · Financial Experts`;
-    trocarTela('curso', { voltarRolagem: voltandoDoSistema && cursoDesenhado() === rota.curso.id });
-    if (anterior?.tela === 'inicio') {
-      const banner = document.getElementById('banner-curso');
-      marcarChegada(banner, 'arte-curso');
-      marcarChegada(banner.querySelector('.banner__logo'), 'logo-curso');
-    }
+    const jaDesenhado = cursoDesenhado() === rota.curso.id;
+    if (jaDesenhado) document.title = `${rota.curso.nome} · Financial Experts`;
+    else mostrarCurso(rota.curso, { perfil: state.perfil });
+    trocarTela('curso', { voltarRolagem: voltandoDoSistema && jaDesenhado });
     if (voltandoDoSistema) {
-      const cartao = cartaoDoSistema(anterior.sistema.id);
-      marcarChegada(cartao, 'janela-sistema');
-      marcarChegada(cartao?.querySelector('.capa__icone'), 'icone-sistema');
       focarSistema(anterior.sistema.id);
     } else {
       document.getElementById('titulo-curso').focus({ preventScroll: true });
@@ -156,38 +145,11 @@ function desenhar(rota, anterior) {
   const { curso, sistema, pagina } = rota;
   mostrarSistema({ curso, sistema, pagina, perfil: state.perfil });
   trocarTela('sistema');
-  if (anterior?.tela === 'curso') {
-    marcarChegada(document.getElementById('moldura'), 'janela-sistema');
-    marcarChegada(document.getElementById('sistema-icone'), 'icone-sistema');
-  }
   document.getElementById('titulo-sistema').focus({ preventScroll: true });
   anunciar(`${sistema.nome}, do curso ${curso.nome}`);
 
   guardarUltimo(state.usuario.id, { cursoId: curso.id, sistemaId: sistema.id, paginaId: pagina?.id });
   atualizarUltimo(lerUltimo(state.usuario.id));
-}
-
-// O que "voa" para a tela nova (View Transitions): o portal do curso vira o
-// banner dele, o cartão de um sistema vira a moldura onde ele abre — e o
-// caminho de volta, ao contrário.
-function saindo(anterior, rota) {
-  if (!anterior) return [];
-  if (anterior.tela === 'inicio' && rota.tela === 'curso') {
-    const portal = portalDoCurso(rota.curso.id);
-    return [[portal, 'arte-curso'], [portal?.querySelector('.portal__logo'), 'logo-curso']];
-  }
-  if (anterior.tela === 'curso' && rota.tela === 'inicio') {
-    const banner = document.getElementById('banner-curso');
-    return [[banner, 'arte-curso'], [banner.querySelector('.banner__logo'), 'logo-curso']];
-  }
-  if (anterior.tela === 'curso' && rota.tela === 'sistema') {
-    const cartao = cartaoDoSistema(rota.sistema.id);
-    return [[cartao, 'janela-sistema'], [cartao?.querySelector('.capa__icone'), 'icone-sistema']];
-  }
-  if (anterior.tela === 'sistema' && rota.tela === 'curso' && anterior.curso.id === rota.curso.id) {
-    return [[document.getElementById('moldura'), 'janela-sistema'], [document.getElementById('sistema-icone'), 'icone-sistema']];
-  }
-  return [];
 }
 
 // Confere o endereço com o catálogo: curso ou sistema que não existe volta
@@ -225,7 +187,7 @@ function conferirRota(pedida) {
 // Os cursos que o login abre, embaixo do cartão de acesso.
 function desenharCursosDoAcesso() {
   document.getElementById('auth-cursos').innerHTML = listarCursos().map((curso, i) => `
-    <li class="auth-curso" style="${estiloDoCurso(curso)};--i:${i}">${escapeHtml(curso.nome)}</li>`).join('');
+    <li class="auth-curso" style="${estiloDoCurso(curso)}">${escapeHtml(curso.nome)}</li>`).join('');
 }
 
 function limpar(texto) {

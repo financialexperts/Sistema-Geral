@@ -44,24 +44,16 @@
   width: 100%;
   max-height: 8.5rem;
   object-fit: contain;
-  animation: banner-logo 900ms var(--mola) 120ms backwards;
 }
 .banner[data-arte="neon"] .banner__logo {
   filter: drop-shadow(0 0 10px var(--cor-brilho)) drop-shadow(0 0 26px color-mix(in srgb, var(--cor) 70%, transparent));
 }
 .banner[data-arte="aurora"] .banner__logo { max-height: 9.5rem; }
-@keyframes banner-logo {
-  from { opacity: 0; transform: scale(0.92); }
-}
 
 .banner__texto {
   display: grid;
   justify-items: start;
   gap: var(--e-3);
-  animation: banner-texto 900ms var(--mola) 220ms backwards;
-}
-@keyframes banner-texto {
-  from { opacity: 0; transform: translateX(16px); }
 }
 .banner__descricao {
   max-width: 34rem;
@@ -106,11 +98,6 @@
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   transition: transform 500ms var(--suave), box-shadow 500ms var(--suave), border-color 500ms var(--suave);
-  animation: cartao-entra 800ms var(--suave) backwards;
-  animation-delay: calc(var(--i, 0) * 80ms + 120ms);
-}
-@keyframes cartao-entra {
-  from { opacity: 0; transform: translateY(22px) scale(0.97); }
 }
 .cartao-sistema:hover,
 .cartao-sistema:focus-visible {

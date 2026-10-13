@@ -70,7 +70,7 @@ export function atualizarUltimo(ultimo) {
   continuar.innerHTML = ultimo ? continuarHtml(ultimo) : '';
 }
 
-export function portalDoCurso(cursoId) {
+function portalDoCurso(cursoId) {
   return portais.querySelector(`.portal[data-curso="${CSS.escape(cursoId)}"]`);
 }
 
@@ -87,7 +87,7 @@ function portalHtml(curso, i) {
   return `
     <li>
       <a class="portal acende" href="${endereco({ tela: 'curso', cursoId: curso.id })}" data-curso="${escapeHtml(curso.id)}"
-         data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}" style="${estiloDoCurso(curso)};--i:${i}">
+         data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}" style="${estiloDoCurso(curso)}">
         ${arteHtml(curso)}
         <div class="portal__conteudo">
           <div class="portal__topo">

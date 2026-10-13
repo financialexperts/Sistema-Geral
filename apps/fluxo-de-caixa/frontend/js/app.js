@@ -2,19 +2,16 @@
   "use strict";
 
   function showView(name) {
-    ["loading", "setup", "auth", "onboarding", "sheet"].forEach(function (v) {
+    ["loading", "setup", "onboarding", "sheet"].forEach(function (v) {
       var el = document.getElementById("view-" + v);
       if (el) el.hidden = v !== name;
     });
   }
 
   /* ============ tema ============ */
+  // A escolha é feita no cabeçalho do portal (chave "tema", a mesma de
+  // sempre); quando ela muda, o apps/compartilhado/portal.js aplica aqui.
   var root = document.documentElement;
-  var metaTheme = document.getElementById("meta-theme-color");
-  function syncThemeColor() {
-    if (!metaTheme) return;
-    metaTheme.setAttribute("content", root.getAttribute("data-theme") === "dark" ? "#171435" : "#F7F7FA");
-  }
   var stored = null;
   try { stored = localStorage.getItem("tema"); } catch (err) { stored = null; }
   if (stored === "dark" || stored === "light") {
@@ -22,13 +19,6 @@
   } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
     root.setAttribute("data-theme", "dark");
   }
-  syncThemeColor();
-  document.getElementById("tema").addEventListener("click", function () {
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    syncThemeColor();
-    try { localStorage.setItem("tema", next); } catch (err) {}
-  });
 
   /* ============ liquid glass: brilho que segue o ponteiro ============ */
   document.addEventListener("pointermove", function (e) {
@@ -39,7 +29,7 @@
     el.style.setProperty("--gy", ((e.clientY - r.top) / r.height * 100) + "%");
   });
 
-  /* ============ configuração do Supabase ============ */
+  /* ============ conexão com o Supabase ============ */
   if (!window.DB.isConfigured) {
     showView("setup");
     return;
@@ -47,35 +37,12 @@
 
   var db = window.DB.client;
 
-  /* ============ roteamento por sessão ============ */
-  // O link de recuperação já chega com sessão válida, então INITIAL_SESSION,
-  // SIGNED_IN e o getSession() inicial mandariam direto pra planilha. Enquanto
-  // a nova senha não for salva, qualquer rota cai na tela de troca de senha.
-  var recovering = window.DB.isRecovery;
-
+  /* ============ roteamento ============ */
+  // O login é o do portal: aqui a sessão já chega pronta. Sem a primeira
+  // configuração feita, aparecem as três etapas; depois, a planilha.
   function route(session) {
-    if (recovering && session) {
-      document.getElementById("userbox").hidden = true;
-      showView("auth");
-      window.AuthView.showRecovery();
-      return;
-    }
-    if (!session) {
-      document.getElementById("userbox").hidden = true;
-      window.AuthView.reset();
-      showView("auth");
-      return;
-    }
-
-    var metaName = session.user.user_metadata && session.user.user_metadata.full_name;
-    document.getElementById("userbox-email").textContent = metaName || session.user.email;
-    document.getElementById("userbox").hidden = false;
-
     db.from("profiles").select("*").eq("id", session.user.id).single().then(function (res) {
       var profile = res.data;
-      if (!metaName && profile && profile.full_name) {
-        document.getElementById("userbox-email").textContent = profile.full_name;
-      }
       if (!profile || !profile.onboarding_completed) {
         showView("onboarding");
         window.OnboardingView.show(session.user, profile, function () { route(session); });
@@ -86,32 +53,9 @@
     });
   }
 
-  db.auth.onAuthStateChange(function (event, session) {
-    if (event === "PASSWORD_RECOVERY") recovering = true;
-    if (event === "SIGNED_OUT") recovering = false;
-    // TOKEN_REFRESHED dispara sozinho em segundo plano pra renovar a sessão,
-    // sem o usuário fazer nada — se recarregássemos a planilha aqui, qualquer
-    // valor ainda não salvo com sucesso (ex.: upsert que falhou) desaparecia
-    // sozinho da tela minutos depois, sem nenhuma ação do usuário.
-    if (event === "TOKEN_REFRESHED" || event === "USER_UPDATED") return;
-    route(session);
-  });
-
-  document.getElementById("btn-logout").addEventListener("click", function () {
-    db.auth.signOut();
-  });
-
-  window.App = {
-    refresh: function () { db.auth.getSession().then(function (res) { route(res.data.session); }); },
-    finishRecovery: function () { recovering = false; window.App.refresh(); }
-  };
-
-  window.AuthView.mount();
   window.OnboardingView.mount();
   window.SheetView.mount();
 
-  if (window.DB.linkError) window.AuthView.showLinkError(window.DB.linkError);
-
   showView("loading");
-  db.auth.getSession().then(function (res) { route(res.data.session); });
+  window.FEPortal.comSessao(db, route);
 })();

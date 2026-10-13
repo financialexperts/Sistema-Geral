@@ -90,7 +90,7 @@ export function cursoDesenhado() {
   return cursoAberto?.id ?? null;
 }
 
-export function cartaoDoSistema(sistemaId) {
+function cartaoDoSistema(sistemaId) {
   return els.lista.querySelector(`.cartao-sistema[data-sistema="${CSS.escape(sistemaId)}"]`);
 }
 
@@ -114,7 +114,7 @@ function cartaoHtml(curso, sistema, i, perfil) {
     : '';
   return `
     <li>
-      <a class="cartao-sistema acende" href="${endereco(rota)}" data-sistema="${escapeHtml(sistema.id)}" style="--i:${i}">
+      <a class="cartao-sistema acende" href="${endereco(rota)}" data-sistema="${escapeHtml(sistema.id)}">
         <span class="capa" data-arte="${escapeHtml(curso.arte)}" data-tom="${escapeHtml(curso.tom)}">
           ${arteHtml(curso, { calma: true })}
           <span class="capa__icone" data-arte="${escapeHtml(curso.arte)}">${iconeSvg(sistema.icone, 'icone-capa')}</span>

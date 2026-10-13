@@ -1,8 +1,7 @@
 /* ============================================================
    ARTE DOS CURSOS — o fundo animado de cada curso, feito a partir
    da logo dele:
-   · neon (Evolution): a moldura de neon da logo acende devagar,
-     sobre um piso quadriculado que corre em direção a quem olha,
+   · neon (Evolution): a moldura de neon da logo, acesa, sobre um piso quadriculado que corre em direção a quem olha,
      com algumas faíscas subindo;
    · aurora (Elas): luzes verde-água que passeiam devagar, limpas;
    · geometria (Master): as três peças do "M" da logo, soltas e
@@ -81,14 +80,12 @@
   transition: opacity var(--lento) var(--suave), box-shadow var(--lento) var(--suave);
 }
 
-/* A moldura de neon da logo: aberta no meio de baixo, acende devagar.
-   O brilho (drop-shadow) fica num invólucro sem máscara, para seguir o
+/* A moldura de neon da logo, aberta no meio de baixo. O brilho (drop-shadow) fica num invólucro sem máscara, para seguir o
    recorte. */
 .arte--neon .arte__neon {
   position: absolute;
   inset: 12px;
   filter: drop-shadow(0 0 2px var(--cor-brilho)) drop-shadow(0 0 10px var(--cor));
-  animation: neon-acende 1.6s var(--suave) 0.2s backwards;
   transition: filter var(--lento) var(--suave);
 }
 .arte--neon .arte__moldura {
@@ -103,9 +100,7 @@
     linear-gradient(#000 0 0) top / 100% calc(100% - 12px) no-repeat,
     linear-gradient(90deg, #000 32%, transparent 32% 68%, #000 68%) bottom / 100% 12px no-repeat;
 }
-@keyframes neon-acende {
-  from { opacity: 0; }
-}
+
 
 /* Faíscas subindo devagar do piso (posição, tempo e atraso no style) */
 .arte--neon .arte__faisca {
